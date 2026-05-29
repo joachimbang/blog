@@ -6,7 +6,7 @@
 % ============================================================================
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{textcomp} % Ameliore le support des caractères Unicode textuels
+\usepackage{textcomp} % Améliore le support des caractères Unicode textuels
 \usepackage[french]{babel}
 \usepackage[margin=2.5cm,top=3cm,bottom=3cm]{geometry}
 \usepackage{xcolor}
@@ -34,7 +34,7 @@
 \usepackage{colortbl}
 \usepackage{csquotes}
 
-% Pour regler le problème du tiret long "—" et de la flèche "↔" globalement :
+% Pour régler le problème du tiret long "—" et de la flèche "↔" globalement :
 \DeclareUnicodeCharacter{2014}{\textemdash}
 \DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}}
 
@@ -48,7 +48,7 @@
 \definecolor{darkgreen}{RGB}{0,100,0}
 \definecolor{warningorange}{RGB}{255,140,0}
 \definecolor{dangerred}{RGB}{220,20,60}
-\definecolor{darkred}{RGB}{139,0,0} % <-- AJOUTe : Règle l'erreur de couleur manquante !
+\definecolor{darkred}{RGB}{139,0,0} % <-- AJOUTÉ : Règle l'erreur de couleur manquante !
 \definecolor{codegray}{RGB}{245,245,245}
 \definecolor{codeborder}{RGB}{200,200,200}
 \definecolor{architectureblue}{RGB}{25,25,112}
@@ -60,7 +60,7 @@
 % ============================================================================
 % CONFIGURATION DES LISTINGS (CODE)
 % ============================================================================
-% Definition propre du langage CSS absent de listings
+% Définition propre du langage CSS absent de listings
 \lstdefinelanguage{CSS}{
   keywords={color,background,margin,padding,font,display,flex,position,width,height,border},
   sensitive=true,
@@ -69,7 +69,7 @@
 }
 
 \lstdefinestyle{javascript}{
-    language=Python, % Conserve selon votre choix d'origine
+    language=Python, % Conservé selon votre choix d'origine
     backgroundcolor=\color{codegray},
     commentstyle=\color{darkgreen}\itshape,
     keywordstyle=\color{deepblue}\bfseries,
@@ -260,7 +260,7 @@
 % ============================================================================
 \title{\textbf{\Huge Rapport Pedagogique Complet}}
 \subtitle{\Large Developpement d'un Blog Multi-Role avec Node.js, Express et PostgreSQL}
-% Auteur (nom seul demande)
+% Auteur (nom seul demandé)
 \author{Joachim BANGIRAHE}
 \date{\today}
 
@@ -310,7 +310,7 @@
 \mainmatter
 % Note: compilez deux fois avec pdflatex pour que la table soit remplie (.toc).
 
-% (Avant-propos supprime : page de garde affiche uniquement le nom de l'auteur)
+% (Avant-propos supprimé : page de garde affiche uniquement le nom de l'auteur)
 % ============================================================================
 % CHAPITRE 1 : INTRODUCTION GENERALE
 % ============================================================================
@@ -964,7 +964,7 @@ import express from 'express';
 \end{lstlisting}
 
 \begin{definitionbox}
-    \textbf{import} : Mot-cle ES module pour importer des modules. Dans le systeme de modules moderne de Node.js, \texttt{import} charge un module et permet d'utiliser ses exports nommes ou par defaut.
+    \textbf{import} : Mot-clé ES module pour importer des modules. Dans le systeme de modules moderne de Node.js, \texttt{import} charge un module et permet d'utiliser ses exports nommés ou par défaut.
 \end{definitionbox}
 
 \begin{analogybox}
@@ -1653,10 +1653,10 @@ fonctionne correctement et ajoute un nouvel utilisateur dans la table
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.9\textwidth]{rapport/images/pgadmin_users.png}
-    \caption{Capture d'ecran de pgAdmin montrant la table \texttt{public.users}}
+    \caption{Capture d'écran de pgAdmin montrant la table \texttt{public.users}}
     \label{fig:pgadmin-users}
 \end{figure}
-% Placez l'image de la capture d'ecran dans le dossier rapport/images/ avec le nom pgadmin_users.png.
+% Placez l'image de la capture d'écran dans le dossier rapport/images/ avec le nom pgadmin_users.png.
 
 \section{Explication du Code}
 
@@ -1811,20 +1811,20 @@ sudo service postgresql start
     \textbf{Resolution} :
     Sur Windows, il est recommande d'utiliser l'interface graphique \texttt{pgAdmin}
     (fournie avec l'installateur PostgreSQL) ou l'application "SQL Shell (psql)"
-    plutot que d'executer directement des commandes dans l'invite Windows.
+    plutot que d'exécuter directement des commandes dans l'invite Windows.
 
-    Procedure (pgAdmin) :
+    Procédure (pgAdmin) :
     \begin{itemize}
         \item Ouvrir \texttt{pgAdmin} et se connecter au serveur en tant que \texttt{postgres}.
-        \item Ouvrir le \emph{Query Tool} pour le serveur ou la base ciblee.
-        \item Executer la commande SQL suivante dans le \emph{Query Tool} :
+        \item Ouvrir le \emph{Query Tool} pour le serveur ou la base ciblée.
+        \item Exécuter la commande SQL suivante dans le \emph{Query Tool} :
     \end{itemize}
 
     \begin{lstlisting}[style=sql]
 ALTER USER postgres WITH PASSWORD 'nouveau_mot_de_passe';
     \end{lstlisting}
 
-    Alternatives en ligne de commande (si souhaite) :
+    Alternatives en ligne de commande (si souhaité) :
     \begin{lstlisting}[style=bash]
 # Linux / macOS :
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'nouveau_mot_de_passe';"
@@ -1835,10 +1835,10 @@ sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'nouveau_mot_de_pass
 \end{errorbox}
 
 \section{Creation de la Base de Donnees}
-Sur Windows, il est plus simple d'utiliser \texttt{pgAdmin} pour creer une base :
+Sur Windows, il est plus simple d'utiliser \texttt{pgAdmin} pour créer une base :
 ouvrir \texttt{pgAdmin} \rightarrow se connecter au serveur \texttt{postgres} \rightarrow
 clic droit sur \emph{Databases} \rightarrow \emph{Create} \rightarrow \emph{Database}.
-Vous pouvez aussi ouvrir le \emph{Query Tool} et executer :
+Vous pouvez aussi ouvrir le \emph{Query Tool} et exécuter :
 
 \begin{lstlisting}[style=sql]
 CREATE DATABASE blog_db;
@@ -1854,9 +1854,9 @@ sudo -u postgres psql -c "CREATE DATABASE blog_db;"
 \end{lstlisting}
 
 \section{Execution du Script SQL}
-Pour executer un fichier SQL depuis \texttt{pgAdmin} : ouvrir la base \texttt{blog_db},
+Pour exécuter un fichier SQL depuis \texttt{pgAdmin} : ouvrir la base \texttt{blog_db},
 ouvrir le \emph{Query Tool}, puis charger le fichier via \emph{File} → \emph{Open} et
-executer son contenu.
+exécuter son contenu.
 
 Alternatives en ligne de commande :
 \begin{lstlisting}[style=bash, caption=Execution du script schema.sql]
@@ -1880,34 +1880,34 @@ psql -U postgres -d blog_db -f sql/schema.sql
 
 \section{Connexion à PostgreSQL depuis pgAdmin et Node}
 
-\subsection{Comment savoir / reinitialiser le mot de passe utilise par pgAdmin}
+\subsection{Comment savoir / réinitialiser le mot de passe utilisé par pgAdmin}
 
 Sur Windows, pgAdmin se connecte au serveur PostgreSQL en utilisant les identifiants
 du compte PostgreSQL (souvent l'utilisateur `postgres`) et le mot de passe choisi
-lors de l'installation. Si vous ne vous rappelez plus du mot de passe, procedez
+lors de l'installation. Si vous ne vous rappelez plus du mot de passe, procédez
 comme suit :
 
 \begin{itemize}
-    \item Methode recommandee (ligne de commande) :
+    \item Méthode recommandée (ligne de commande) :
     \begin{itemize}
-        \item Ouvrir une Invite de commandes / PowerShell elevee (executer en tant
+        \item Ouvrir une Invite de commandes / PowerShell élevée (exécuter en tant
         qu'administrateur).
-        \item Appeler le binaire `psql` fourni par PostgreSQL et executer une
-        commande SQL pour reinitialiser le mot de passe :
+        \item Appeler le binaire `psql` fourni par PostgreSQL et exécuter une
+        commande SQL pour réinitialiser le mot de passe :
     \end{itemize}
     \begin{lstlisting}[style=bash]
 "C:\\Program Files\\PostgreSQL\\15\\bin\\psql.exe" -U postgres -c "ALTER USER postgres WITH PASSWORD 'NouveauMotDePasse';"
     \end{lstlisting}
-    \item Si vous avez accès à une machine Linux/macOS où PostgreSQL est installe :
+    \item Si vous avez accès à une machine Linux/macOS où PostgreSQL est installé :
     \begin{lstlisting}[style=bash]
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'NouveauMotDePasse';"
     \end{lstlisting}
-    \item Une fois le mot de passe reinitialise, ouvrez \texttt{pgAdmin} et entrez
+    \item Une fois le mot de passe réinitialisé, ouvrez \texttt{pgAdmin} et entrez
     le nouveau mot de passe dans la configuration de la connexion (clic droit
     sur le serveur → \emph{Properties} → onglet \emph{Connection}).
-    \item Si vous ne pouvez pas executer `psql` localement, vous pouvez demarrer
-    PostgreSQL en mode single-user ou utiliser l'installateur pour reparer/reinitialiser,
-    mais ces methodes sont avancees : preferez la commande ci-dessus.
+    \item Si vous ne pouvez pas exécuter `psql` localement, vous pouvez démarrer
+    PostgreSQL en mode single-user ou utiliser l'installateur pour réparer/réinitialiser,
+    mais ces méthodes sont avancées : préférez la commande ci-dessus.
 \end{itemize}
 
 \subsection{Quelles informations entrer dans pgAdmin et dans `.env` pour Node}
@@ -1917,11 +1917,11 @@ vous aurez besoin des informations suivantes :
 
 \begin{itemize}
     \item \textbf{Host} : adresse du serveur (ex. `localhost` ou une IP)
-    \item \textbf{Port} : port PostgreSQL (par defaut `5432`)
+    \item \textbf{Port} : port PostgreSQL (par défaut `5432`)
     \item \textbf{Database} : nom de la base (ex. `blog_db`)
     \item \textbf{User} : nom d'utilisateur PostgreSQL (ex. `postgres`)
-    \item \textbf{Password} : mot de passe PostgreSQL (celui reinitialise ci‑dessus)
-    \item \textbf{SSL} : si votre serveur necessite TLS/SSL (souvent `true` en prod)
+    \item \textbf{Password} : mot de passe PostgreSQL (celui réinitialisé ci‑dessus)
+    \item \textbf{SSL} : si votre serveur nécessite TLS/SSL (souvent `true` en prod)
 \end{itemize}
 
 Exemple de fichier `.env` pour Node :
@@ -1963,30 +1963,30 @@ Conseils pratiques :
 \begin{itemize}
     \item Ne stockez jamais de mots de passe en clair dans le code source : utilisez
     des variables d'environnement ou un gestionnaire de secrets.
-    \item Verifiez que PostgreSQL accepte les connexions depuis l'hôte indique en
+    \item Vérifiez que PostgreSQL accepte les connexions depuis l'hôte indiqué en
     contrôlant `listen_addresses` dans `postgresql.conf` et les règles de
     `pg_hba.conf`.
 \end{itemize}
 
 \section{Authentification : Access token et Refresh token}
 
-Pour des sessions securisees, on utilise typiquement des tokens JWT d'accès
+Pour des sessions sécurisées, on utilise typiquement des tokens JWT d'accès
 (short-lived "access tokens") et des tokens de rafraîchissement (long-lived
-"refresh tokens"). Le schema typique :
+"refresh tokens"). Le schéma typique :
 
 \begin{itemize}
-        \item L'API emet un `accessToken` (p. ex. 15 minutes) et un `refreshToken`
+        \item L'API émet un `accessToken` (p. ex. 15 minutes) et un `refreshToken`
         (p. ex. 7 jours) à la connexion (`/login`).
         \item Le client utilise `accessToken` dans l'en-tête `Authorization: Bearer ...`
-        pour acceder aux ressources protegees.
+        pour accéder aux ressources protégées.
         \item Quand l'`accessToken` expire, le client appelle `/token` avec le
         `refreshToken` pour obtenir un nouveau `accessToken`.
-        \item Le `refreshToken` peut être revoque côte serveur lors de la deconnexion.
+        \item Le `refreshToken` peut être révoqué côté serveur lors de la déconnexion.
 \end{itemize}
 
-Ci-dessous un exemple minimal en Node.js (Express) montrant l'implementation
+Ci-dessous un exemple minimal en Node.js (Express) montrant l'implémentation
 des endpoints `POST /login`, `POST /token` et `POST /logout`, ainsi qu'un
-middleware `authenticateToken` pour proteger les routes. Le code complet se
+middleware `authenticateToken` pour protéger les routes. Le code complet se
 trouve dans les fichiers d'exemple `server.js` et `auth.js` fournis avec ce projet.
 
 \begin{lstlisting}[style=javascript, caption=Exemple minimal d'authentification avec refresh tokens]
@@ -1996,11 +1996,11 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { generateAccessToken, generateRefreshToken } from './auth.js';
 
-// stockage memoire des refresh tokens (pour demo). En prod : stocker en DB.
+// stockage mémoire des refresh tokens (pour démo). En prod : stocker en DB.
 let refreshTokens = [];
 
 app.post('/login', async (req, res) => {
-    // verifier utilisateur / mot de passe (hash)
+    // vérifier utilisateur / mot de passe (hash)
     const payload = { id: user.id, username: user.username };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
@@ -2026,7 +2026,7 @@ app.post('/logout', (req, res) => {
 });
 \end{lstlisting}
 
-Le code d'exemple complet est fourni dans les fichiers crees : `server.js`,
+Le code d'exemple complet est fourni dans les fichiers créés : `server.js`,
 `auth.js`, un `package.json` minimal et `.env.example`.
 
 
@@ -2530,7 +2530,7 @@ router.post('/login', async (req, res) => {
         );
 
         // En production, stockez le refresh token dans la base de donnees ou un cache
-        // pour pouvoir le revoquer en cas de deconnexion ou de compromission.
+        // pour pouvoir le révoquer en cas de deconnexion ou de compromission.
         res.json({
             message: 'Connexion reussie',
             accessToken,
@@ -3006,8 +3006,8 @@ La requete ci-dessus combine plusieurs concepts SQL courants. Nous expliquons ch
     \item \textbf{LEFT JOIN users u ON b.auteur\_id = u.id} : joint la table \texttt{users} a \texttt{blogs}. LEFT JOIN signifie "garder toutes les lignes de la table de gauche (blogs)" meme si aucune correspondance n'existe dans \texttt{users} (les colonnes de \texttt{users} seront NULL si pas de match).
     \item \textbf{LEFT JOIN commentaires c ON b.id = c.blog\_id} : joint les commentaires associes a chaque blog. Un blog sans commentaires reste presente avec NULLs pour \texttt{c}.
     \item \textbf{COUNT(c.id) as nombre\_commentaires} : compte le nombre de lignes de la jointure pour chaque blog (nombre de commentaires). COUNT(ignore les NULLs quand on compte une colonne specifique).
-    \item \textbf{GROUP BY b.id, u.nom, u.prenom, u.email} : necessaire parce qu'on utilise une fonction d'aggregation (COUNT). On indique les colonnes non-aggregees qui doivent apparaître dans le SELECT.
-    \item \textbf{ORDER BY b.date\_creation DESC} : trie les resultats par date de creation du plus recent au plus ancien.
+    \item \textbf{GROUP BY b.id, u.nom, u.prenom, u.email} : necessaire parce qu'on utilise une fonction d'aggregation (COUNT). On indique les colonnes non-aggregées qui doivent apparaître dans le SELECT.
+    \item \textbf{ORDER BY b.date\_creation DESC} : trie les resultats par date de creation du plus récent au plus ancien.
 \end{itemize}
 
 \paragraph{Petit exemple illustratif}
@@ -3047,7 +3047,7 @@ GROUP BY b.id, b.titre;
 
 Remarques pratiques :
 \begin{itemize}
-    \item Toujours verifier les colonnes du \texttt{GROUP BY} : toutes les colonnes non-aggregees doivent y apparaitre.
+    \item Toujours verifier les colonnes du \texttt{GROUP BY} : toutes les colonnes non-aggregées doivent y apparaitre.
     \item Utiliser \texttt{LEFT JOIN} si vous voulez garder les entites de gauche meme si elles n'ont pas de correspondance.
     \item Si vous utilisez \texttt{JOIN} (INNER JOIN), les lignes sans correspondance seront exclues.
 \end{itemize}

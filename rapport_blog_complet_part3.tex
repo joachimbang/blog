@@ -1,0 +1,2584 @@
+% ============================================================================
+% CHAPITRE 9 : AUTHENTIFICATION JWT
+% ============================================================================
+\chapter{Authentification JWT}
+
+\section{Introduction à l'Authentification}
+
+L'authentification est le processus de vérification de l'identité d'un utilisateur. C'est la première étape de sécurité dans toute application.
+
+\begin{definitionbox}
+    \textbf{Authentification} : Processus de vérification de l'identité d'un utilisateur ou d'un système. L'authentification répond à la question "Qui êtes-vous ?".
+\end{definitionbox}
+
+\begin{definitionbox}
+    \textbf{Autorisation} : Processus de détermination des droits d'accès d'un utilisateur authentifié. L'autorisation répond à la question "Qu'êtes-vous autorisé à faire ?".
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie de l'Aéroport} :
+    \begin{itemize}
+        \item \textbf{Authentification} : Présenter votre passeport au contrôle de sécurité pour prouver qui vous êtes.
+        \item \textbf{Autorisation} : Le personnel vérifie si vous avez le droit d'accéder à la zone d'embarquement.
+    \end{itemize}
+\end{analogybox}
+
+\section{Authentification Stateful vs Stateless}
+
+\subsection{Authentification Stateful (Sessions)}
+
+\begin{definitionbox}
+    \textbf{Authentification Stateful} : Le serveur stocke l'état de la session de l'utilisateur (généralement dans une base de données ou en mémoire). Le client envoie un ID de session, et le serveur le lookup pour valider.
+\end{definitionbox}
+
+\begin{itemize}
+    \item \textbf{Avantages} : Révocation facile, stockage de données côté serveur
+    \item \textbf{Inconvénients} : Scalabilité difficile, nécessite un stockage serveur
+\end{itemize}
+
+\subsection{Authentification Stateless (JWT)}
+
+\begin{definitionbox}
+    \textbf{Authentification Stateless} : Le serveur ne stocke aucun état. Toutes les informations nécessaires sont contenues dans le token envoyé par le client. Le serveur vérifie uniquement la signature du token.
+\end{definitionbox}
+
+\begin{itemize}
+    \item \textbf{Avantages} : Scalabilité facile, pas de stockage serveur, distribué
+    \item \textbf{Inconvénients} : Révocation difficile, taille du token
+\end{itemize}
+
+\section{Qu'est-ce qu'un JWT ?}
+
+\begin{definitionbox}
+    \textbf{JWT (JSON Web Token)} : Standard ouvert (RFC 7519) pour créer des tokens d'accès sécurisés. Un JWT est un token compact et autonome qui contient des informations (claims) et est signé cryptographiquement.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Badge d'Étudiant} :
+    \begin{itemize}
+        \item Le \textbf{JWT} est comme un badge d'étudiant sécurisé.
+        \item Il contient votre nom, votre rôle et une date d'expiration.
+        \item Le badge est signé par l'université (signature cryptographique).
+        \item Vous le présentez pour accéder aux bâtiments.
+        \item Le gardien vérifie la signature pour confirmer son authenticité.
+    \end{itemize}
+\end{analogybox}
+
+\section{Structure d'un JWT}
+
+Un JWT est composé de trois parties séparées par des points :
+
+\texttt{xxxxx.yyyyy.zzzzz}
+
+\subsection{Header (En-tête)}
+
+\begin{definitionbox}
+    \textbf{Header} : Contient le type de token (JWT) et l'algorithme de signature utilisé (ex: HS256).
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript]
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+\end{lstlisting}
+
+\subsection{Payload (Charge Utile)}
+
+\begin{definitionbox}
+    \textbf{Payload} : Contient les claims (informations) sur l'utilisateur. Les claims sont des déclarations sur l'entité (ex: id, email, role, expiration).
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript]
+{
+  "sub": "1234567890",        // Subject (ID utilisateur)
+  "email": "user@example.com",
+  "role": "auteur",
+  "iat": 1516239022,          // Issued At (date d'émission)
+  "exp": 1516242622           // Expiration (date d'expiration)
+}
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Claims Standard} :
+    \begin{itemize}
+        \item \textbf{iss} (Issuer) : Émetteur du token
+        \item \textbf{sub} (Subject) : Sujet du token (généralement l'ID utilisateur)
+        \item \textbf{aud} (Audience) : Audience du token
+        \item \textbf{exp} (Expiration) : Date d'expiration
+        \item \textbf{iat} (Issued At) : Date d'émission
+        \item \textbf{nbf} (Not Before) : Date avant laquelle le token n'est pas valide
+    \end{itemize}
+\end{definitionbox}
+
+\subsection{Signature}
+
+\begin{definitionbox}
+    \textbf{Signature} : Signature cryptographique qui garantit l'intégrité et l'authenticité du token. Elle est créée en signant le header et le payload avec une clé secrète.
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript]
+HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret
+)
+\end{lstlisting}
+
+\section{Pourquoi JWT est Sécurisé ?}
+
+\begin{itemize}
+    \item \textbf{Signature Cryptographique} : Impossible à falsifier sans la clé secrète
+    \item \textbf{Expiration} : Les tokens expirent automatiquement
+    \item \textbf{Stateless} : Pas de stockage serveur nécessaire
+    \item \textbf{Standard} : Basé sur des standards RFC
+\end{itemize}
+
+\begin{securitybox}
+    \textbf{ATTENTION} : Le payload d'un JWT est encodé en Base64, PAS chiffré. N'importe qui peut décoder le payload et voir les informations. Ne stockez JAMAIS d'informations sensibles (mots de passe, numéros de carte) dans le payload.
+\end{securitybox}
+
+\section{Implémentation de la Connexion}
+
+Ajoutez la route de connexion dans \texttt{routes/auth.js} :
+
+\begin{lstlisting}[style=javascript, caption=routes/auth.js - Route de connexion avec JWT]
+const jwt = require('jsonwebtoken');
+
+// ============================================================================
+// ROUTE DE CONNEXION
+// ============================================================================
+
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        // Validation des données
+        if (!email || !password) {
+            return res.status(400).json({ 
+                error: 'Email et mot de passe requis' 
+            });
+        }
+        
+        // Recherche de l'utilisateur
+        const result = await db.query(
+            'SELECT * FROM users WHERE email = $1',
+            [email]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(401).json({ 
+                error: 'Email ou mot de passe incorrect' 
+            });
+        }
+        
+        const user = result.rows[0];
+        
+        // Vérification du mot de passe
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
+        
+        if (!isValidPassword) {
+            return res.status(401).json({ 
+                error: 'Email ou mot de passe incorrect' 
+            });
+        }
+        
+        // Génération du token JWT
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                email: user.email,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            { 
+                expiresIn: '24h'  // Le token expire après 24 heures
+            }
+        );
+        
+        // Réponse
+        res.json({
+            message: 'Connexion réussie',
+            token: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                nom: user.nom,
+                prenom: user.prenom,
+                role: user.role
+            }
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la connexion:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la connexion' 
+        });
+    }
+});
+\end{lstlisting}
+
+\section{Explication du Code}
+
+\subsection{Génération du Token}
+
+\begin{lstlisting}[style=javascript]
+const token = jwt.sign(
+    {
+        userId: user.id,
+        email: user.email,
+        role: user.role
+    },
+    process.env.JWT_SECRET,
+    { 
+        expiresIn: '24h'
+    }
+);
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{jwt.sign()} : Fonction qui crée un JWT. Elle prend trois arguments :
+    \begin{enumerate}
+        \item Le payload (objet avec les claims)
+        \item La clé secrète (pour la signature)
+        \item Les options (ex: expiration)
+    \end{enumerate}
+\end{definitionbox}
+
+\subsection{Clé Secrète JWT}
+
+\begin{definitionbox}
+    \textbf{JWT\_SECRET} : Clé secrète utilisée pour signer les tokens. Elle doit être :
+    \begin{itemize}
+        \item Longue (minimum 32 caractères)
+        \item Aléatoire
+        \item Gardée secrète (jamais commitée)
+        \item Unique par application
+    \end{itemize}
+\end{definitionbox}
+
+\begin{warningbox}
+    \textbf{CRITIQUE} : Si la clé secrète est compromise, un attaquant peut forger des tokens valides et accéder à n'importe quel compte. Changez la clé secrète régulièrement en production.
+\end{warningbox}
+
+\subsection{Expiration du Token}
+
+\begin{lstlisting}[style=javascript]
+{ expiresIn: '24h' }
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Expiration} : Durée de validité du token. Après expiration, le token est invalide et l'utilisateur doit se reconnecter.
+\end{definitionbox}
+
+\begin{bestpracticebox}
+    \textbf{Choix de l'Expiration} :
+    \begin{itemize}
+        \item \textbf{15 minutes - 1 heure} : Applications sensibles (banques)
+        \item \textbf{24 heures} : Applications standard (recommandé)
+        \item \textbf{7 jours - 30 jours} : Applications moins sensibles
+        \item Utilisez des "refresh tokens" pour les sessions longues
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Envoi du Token au Client}
+
+Le token est envoyé dans la réponse JSON :
+
+\begin{lstlisting}[style=javascript]
+res.json({
+    message: 'Connexion réussie',
+    token: token,
+    user: { ... }
+});
+\end{lstlisting}
+
+Le client doit stocker ce token et l'envoyer dans les requêtes ultérieures.
+
+\section{Utilisation du Token dans les Requêtes}
+
+Le client doit envoyer le token dans l'en-tête HTTP \texttt{Authorization} :
+
+\begin{lstlisting}[style=bash, caption=Exemple de requête avec token]
+GET /api/blogs HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Authorization Header} : En-tête HTTP standard pour l'authentification. Le format est "Bearer <token>".
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Badge} : L'en-tête Authorization est comme présenter votre badge au gardien. Le format "Bearer" signifie "je porte ce badge" (je suis autorisé par ce token).
+\end{analogybox}
+
+\section{Vérification du Token}
+
+Créez le middleware \texttt{middleware/auth.js} :
+
+\begin{lstlisting}[style=javascript, caption=middleware/auth.js - Middleware de vérification JWT]
+const jwt = require('jsonwebtoken');
+
+const verifierConnexion = (req, res, next) => {
+    try {
+        // Récupération du token depuis l'en-tête Authorization
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ 
+                error: 'Token manquant' 
+            });
+        }
+        
+        // Extraction du token (format: "Bearer <token>")
+        const token = authHeader.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({ 
+                error: 'Token manquant' 
+            });
+        }
+        
+        // Vérification du token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Ajout des informations utilisateur à la requête
+        req.user = decoded;
+        
+        // Passage au middleware suivant
+        next();
+        
+    } catch (err) {
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ 
+                error: 'Token invalide' 
+            });
+        }
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                error: 'Token expiré' 
+            });
+        }
+        console.error('Erreur de vérification du token:', err);
+        res.status(500).json({ 
+            error: 'Erreur de vérification du token' 
+        });
+    }
+};
+
+module.exports = verifierConnexion;
+\end{lstlisting}
+
+\section{Erreurs Courantes JWT}
+
+\subsection{JsonWebTokenError: invalid signature}
+
+\begin{errorbox}
+    \textbf{Erreur : JsonWebTokenError: invalid signature}
+    
+    \textbf{Cause} : La signature du token est invalide. Cela peut arriver si :
+    \begin{itemize}
+        \item Le token a été modifié
+        \item La clé secrète a changé
+        \item Le token a été généré avec une autre clé secrète
+    \end{itemize}
+    
+    \textbf{Résolution} :
+    \begin{itemize}
+        \item Vérifiez que JWT\_SECRET est le même côté client et serveur
+        \item Vérifiez que le token n'a pas été modifié
+        \item Demandez à l'utilisateur de se reconnecter
+    \end{itemize}
+\end{errorbox}
+
+\subsection{TokenExpiredError}
+
+\begin{errorbox}
+    \textbf{Erreur : TokenExpiredError: jwt expired}
+    
+    \textbf{Cause} : Le token a expiré.
+    
+    \textbf{Résolution} :
+    \begin{itemize}
+        \item Demandez à l'utilisateur de se reconnecter
+        \item Implémentez un système de refresh tokens
+    \end{itemize}
+\end{errorbox}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques JWT} :
+    \begin{itemize}
+        \item Utilisez toujours HTTPS en production
+        \item Ne stockez pas d'informations sensibles dans le payload
+        \item Définissez toujours une expiration
+        \item Utilisez des clés secrètes longues et aléatoires
+        \item Validez toujours le token côté serveur
+        \item Implémentez la révocation des tokens si nécessaire
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 10 : LES MIDDLEWARES EXPRESS
+% ============================================================================
+\chapter{Les Middlewares Express}
+
+\section{Introduction aux Middlewares}
+
+Les middlewares sont le cœur de l'architecture Express. Ils permettent de traiter les requêtes de manière modulaire et réutilisable.
+
+\begin{definitionbox}
+    \textbf{Middleware} : Fonction qui a accès à l'objet requête (req), l'objet réponse (res), et la fonction middleware suivante (next) dans le cycle requête-réponse de l'application.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie de la Chaîne de Montage} :
+    Les middlewares sont comme les stations d'une chaîne de montage. Chaque station effectue une tâche spécifique (vérification, transformation, assemblage) avant de passer le produit à la station suivante.
+\end{analogybox}
+
+\section{Signature d'un Middleware}
+
+\begin{lstlisting}[style=javascript, caption=Signature d'un middleware]
+function middleware(req, res, next) {
+    // Traitement de la requête
+    console.log('Requête reçue:', req.method, req.path);
+    
+    // Passer au middleware suivant
+    next();
+}
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Paramètres du Middleware} :
+    \begin{itemize}
+        \item \textbf{req} : Objet représentant la requête HTTP
+        \item \textbf{res} : Objet représentant la réponse HTTP
+        \item \textbf{next} : Fonction pour passer au middleware suivant
+    \end{itemize}
+\end{definitionbox}
+
+\section{Cycle de Vie d'une Requête}
+
+\begin{enumerate}
+    \item La requête arrive au serveur
+    \item Les middlewares globaux s'exécutent dans l'ordre
+    \item Chaque middleware peut :
+        \begin{itemize}
+            \item Terminer le cycle (envoyer une réponse)
+            \item Passer au middleware suivant (next())
+            \item Passer une erreur (next(err))
+        \end{itemize}
+    \item Le gestionnaire de route s'exécute
+    \item La réponse est envoyée
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, auto, thick]
+    \tikzstyle{block} = [rectangle, draw, fill=deepblue!20, text width=2cm, text centered, rounded corners, minimum height=0.8cm]
+    \tikzstyle{arrow} = [->, >=stealth, thick]
+    
+    \node[block] (req) {Requête};
+    \node[block, right=1cm of req] (mw1) {Middleware 1};
+    \node[block, right=1cm of mw1] (mw2) {Middleware 2};
+    \node[block, right=1cm of mw2] (route) {Route};
+    \node[block, right=1cm of route] (res) {Réponse};
+    
+    \draw[arrow] (req) -- (mw1);
+    \draw[arrow] (mw1) -- (mw2);
+    \draw[arrow] (mw2) -- (route);
+    \draw[arrow] (route) -- (res);
+\end{tikzpicture}
+\end{center}
+
+\section{Types de Middlewares}
+
+\subsection{Middleware de Niveau Application}
+
+\begin{lstlisting}[style=javascript, caption=Middleware de niveau application]
+app.use((req, res, next) => {
+    console.log('Requête reçue:', req.method, req.path);
+    next();
+});
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Middleware de Niveau Application} : Middleware appliqué à toutes les routes de l'application. Il est défini avec \texttt{app.use()}.
+\end{definitionbox}
+
+\subsection{Middleware de Niveau Route}
+
+\begin{lstlisting}[style=javascript, caption=Middleware de niveau route]
+router.get('/protected', verifierConnexion, (req, res) => {
+    res.json({ message: 'Accès autorisé' });
+});
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Middleware de Niveau Route} : Middleware appliqué uniquement à une route spécifique. Il est passé comme argument à la définition de la route.
+\end{definitionbox}
+
+\subsection{Middleware de Gestion d'Erreurs}
+
+\begin{lstlisting}[style=javascript, caption=Middleware de gestion d'erreurs]
+app.use((err, req, res, next) => {
+    console.error('Erreur:', err);
+    res.status(500).json({ error: 'Erreur interne' });
+});
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Middleware de Gestion d'Erreurs} : Middleware spécial avec quatre arguments (err, req, res, next). Express le reconnaît automatiquement comme middleware de gestion d'erreurs.
+\end{definitionbox}
+
+\section{L'Objet req (Requête)}
+
+\begin{definitionbox}
+    \textbf{req} : Objet représentant la requête HTTP. Il contient toutes les informations sur la requête du client.
+\end{definitionbox}
+
+\subsection{Propriétés Principales de req}
+
+\begin{itemize}
+    \item \textbf{req.method} : Méthode HTTP (GET, POST, PUT, DELETE)
+    \item \textbf{req.path} : Chemin de la requête
+    \item \textbf{req.query} : Paramètres de l'URL (query string)
+    \item \textbf{req.params} : Paramètres de route (ex: /blogs/:id)
+    \item \textbf{req.body} : Corps de la requête (JSON, form data)
+    \item \textbf{req.headers} : En-têtes HTTP
+    \item \textbf{req.cookies} : Cookies (si cookie-parser est utilisé)
+\end{itemize}
+
+\begin{lstlisting}[style=javascript, caption=Exemple d'utilisation de req]
+app.get('/blogs/:id', (req, res) => {
+    const blogId = req.params.id;      // Paramètre de route
+    const page = req.query.page;      // Paramètre query
+    const auth = req.headers.authorization; // En-tête
+    
+    console.log('ID:', blogId, 'Page:', page);
+});
+\end{lstlisting}
+
+\section{L'Objet res (Réponse)}
+
+\begin{definitionbox}
+    \textbf{res} : Objet représentant la réponse HTTP. Il contient toutes les méthodes pour envoyer une réponse au client.
+\end{definitionbox}
+
+\subsection{Méthodes Principales de res}
+
+\begin{itemize}
+    \item \textbf{res.status(code)} : Définit le code HTTP de la réponse
+    \item \textbf{res.json(data)} : Envoie une réponse JSON
+    \item \textbf{res.send(data)} : Envoie une réponse (peut être JSON, texte, etc.)
+    \item \textbf{res.render(view)} : Rend un template (si un moteur de template est configuré)
+    \item \textbf{res.redirect(url)} : Redirige vers une autre URL
+    \item \textbf{res.cookie(name, value)} : Définit un cookie
+\end{itemize}
+
+\begin{lstlisting}[style=javascript, caption=Exemple d'utilisation de res]
+app.get('/blogs/:id', (req, res) => {
+    res.status(200).json({
+        id: req.params.id,
+        titre: 'Mon Blog'
+    });
+});
+\end{lstlisting}
+
+\section{La Fonction next()}
+
+\begin{definitionbox}
+    \textbf{next()} : Fonction qui passe le contrôle au middleware suivant dans la chaîne. Si next() n'est pas appelé, la chaîne s'arrête et la requête reste en attente (timeout).
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript, caption=Importance de next()}
+app.use((req, res, next) => {
+    console.log('Middleware 1');
+    next(); // Obligatoire pour passer au middleware suivant
+});
+
+app.use((req, res, next) => {
+    console.log('Middleware 2');
+    next();
+});
+\end{lstlisting}
+
+\begin{errorbox}
+    \textbf{Erreur : Timeout} : Si next() n'est pas appelé et qu'aucune réponse n'est envoyée, la requête reste en attente jusqu'au timeout.
+\end{errorbox}
+
+\section{Middleware de Vérification de Connexion}
+
+Nous avons déjà créé ce middleware dans le chapitre précédent. Voici une version améliorée :
+
+\begin{lstlisting}[style=javascript, caption=middleware/auth.js - Middleware vérifierConnexion amélioré]
+const jwt = require('jsonwebtoken');
+
+const verifierConnexion = (req, res, next) => {
+    try {
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({ 
+                error: 'Token manquant',
+                code: 'TOKEN_MISSING'
+            });
+        }
+        
+        const token = authHeader.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({ 
+                error: 'Token manquant',
+                code: 'TOKEN_MISSING'
+            });
+        }
+        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Ajout des informations utilisateur à la requête
+        req.user = {
+            userId: decoded.userId,
+            email: decoded.email,
+            role: decoded.role
+        };
+        
+        next();
+        
+    } catch (err) {
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ 
+                error: 'Token invalide',
+                code: 'TOKEN_INVALID'
+            });
+        }
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                error: 'Token expiré',
+                code: 'TOKEN_EXPIRED'
+            });
+        }
+        console.error('Erreur de vérification du token:', err);
+        res.status(500).json({ 
+            error: 'Erreur de vérification du token',
+            code: 'TOKEN_ERROR'
+        });
+    }
+};
+
+module.exports = verifierConnexion;
+\end{lstlisting}
+
+\section{Middleware de Vérification des Rôles}
+
+Créez le middleware \texttt{middleware/roles.js} :
+
+\begin{lstlisting}[style=javascript, caption=middleware/roles.js - Middleware vérifierAuteur]
+const verifierAuteur = (req, res, next) => {
+    try {
+        // Vérification que l'utilisateur est authentifié
+        if (!req.user) {
+            return res.status(401).json({ 
+                error: 'Non authentifié' 
+            });
+        }
+        
+        // Vérification du rôle
+        if (req.user.role !== 'auteur' && req.user.role !== 'admin') {
+            return res.status(403).json({ 
+                error: 'Accès refusé : rôle insuffisant' 
+            });
+        }
+        
+        next();
+        
+    } catch (err) {
+        console.error('Erreur de vérification du rôle:', err);
+        res.status(500).json({ 
+            error: 'Erreur de vérification du rôle' 
+        });
+    }
+};
+
+const verifierAdmin = (req, res, next) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ 
+                error: 'Non authentifié' 
+            });
+        }
+        
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ 
+                error: 'Accès refusé : rôle admin requis' 
+            });
+        }
+        
+        next();
+        
+    } catch (err) {
+        console.error('Erreur de vérification du rôle:', err);
+        res.status(500).json({ 
+            error: 'Erreur de vérification du rôle' 
+        });
+    }
+};
+
+module.exports = { verifierAuteur, verifierAdmin };
+\end{lstlisting}
+
+\section{Contrôle d'Accès Basé sur les Rôles (RBAC)}
+
+\begin{definitionbox}
+    \textbf{RBAC (Role-Based Access Control)} : Méthode de contrôle d'accès où les permissions sont basées sur les rôles des utilisateurs plutôt que sur leurs identités individuelles.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie de l'Entreprise} :
+    \begin{itemize}
+        \item \textbf{Admin} : PDG - Accès à tout
+        \item \textbf{Auteur} : Manager - Peut créer et modifier
+        \item \textbf{Utilisateur} : Employé - Peut seulement lire
+    \end{itemize}
+\end{analogybox}
+
+\section{Routes Protégées vs Publiques}
+
+\subsection{Route Publique}
+
+\begin{lstlisting}[style=javascript, caption=Route publique (sans authentification)]
+router.get('/blogs', async (req, res) => {
+    // N'importe qui peut accéder à cette route
+    const blogs = await db.query('SELECT * FROM blogs');
+    res.json(blogs.rows);
+});
+\end{lstlisting}
+
+\subsection{Route Protégée}
+
+\begin{lstlisting}[style=javascript, caption=Route protégée (avec authentification)]
+router.post('/blogs', verifierConnexion, async (req, res) => {
+    // Seuls les utilisateurs authentifiés peuvent accéder
+    const { titre, contenu } = req.body;
+    const auteur_id = req.user.userId;
+    
+    const result = await db.query(
+        'INSERT INTO blogs (titre, contenu, auteur_id) VALUES ($1, $2, $3) RETURNING *',
+        [titre, contenu, auteur_id]
+    );
+    
+    res.json(result.rows[0]);
+});
+\end{lstlisting}
+
+\subsection{Route avec Rôle Spécifique}
+
+\begin{lstlisting}[style=javascript, caption=Route avec rôle spécifique]
+router.delete('/blogs/:id', verifierConnexion, verifierAuteur, async (req, res) => {
+    // Seuls les auteurs et admins peuvent supprimer
+    const { id } = req.params;
+    
+    await db.query('DELETE FROM blogs WHERE id = $1', [id]);
+    
+    res.json({ message: 'Blog supprimé' });
+});
+\end{lstlisting}
+
+\section{Codes HTTP d'Authentification}
+
+\begin{itemize}
+    \item \textbf{200 OK} : Requête réussie
+    \item \textbf{201 Created} : Ressource créée avec succès
+    \item \textbf{400 Bad Request} : Requête invalide
+    \item \textbf{401 Unauthorized} : Non authentifié (token manquant ou invalide)
+    \item \textbf{403 Forbidden} : Authentifié mais pas autorisé (rôle insuffisant)
+    \item \textbf{404 Not Found} : Ressource non trouvée
+    \item \textbf{500 Internal Server Error} : Erreur serveur
+\end{itemize}
+
+\begin{definitionbox}
+    \textbf{401 vs 403} :
+    \begin{itemize}
+        \item \textbf{401 Unauthorized} : "Je ne sais pas qui vous êtes" (pas de token)
+        \item \textbf{403 Forbidden} : "Je sais qui vous êtes, mais vous n'avez pas le droit" (rôle insuffisant)
+    \end{itemize}
+\end{definitionbox}
+
+\section{Erreur Courante : Cannot Set Headers After They Are Sent}
+
+\begin{errorbox}
+    \textbf{Erreur : Error [ERR\_HTTP\_HEADERS\_SENT]: Cannot set headers after they are sent}
+    
+    \textbf{Cause} : Tentative d'envoyer une réponse après qu'une réponse a déjà été envoyée.
+    
+    \textbf{Exemple de code incorrect} :
+    \begin{lstlisting}[style=javascript]
+router.get('/test', (req, res) => {
+    res.json({ message: 'Première réponse' });
+    res.json({ message: 'Deuxième réponse' }); // ERREUR !
+});
+    \end{lstlisting}
+    
+    \textbf{Résolution} :
+    \begin{lstlisting}[style=javascript]
+router.get('/test', (req, res) => {
+    res.json({ message: 'Réponse unique' });
+    return; // Important !
+});
+    \end{lstlisting}
+\end{errorbox}
+
+\begin{bestpracticebox}
+    \textbf{Prévention} :
+    \begin{itemize}
+        \item Utilisez toujours \texttt{return} après \texttt{res.json()} ou \texttt{res.status()}
+        \item N'appelez jamais \texttt{next()} après avoir envoyé une réponse
+        \item Utilisez des conditions if/else claires
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Bonnes Pratiques des Middlewares}
+
+\begin{bestpracticebox}
+    \textbf{Règles d'Or} :
+    \begin{itemize}
+        \item Un middleware doit avoir une responsabilité unique
+        \item Toujours appeler \texttt{next()} ou envoyer une réponse
+        \item Utilisez \texttt{return} après avoir envoyé une réponse
+        \item Gérez les erreurs avec try/catch
+        \item Ne modifiez pas \texttt{req} et \texttt{res} de manière inattendue
+        \item Documentez le comportement de chaque middleware
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 11 : ROUTES BACKEND COMPLÈTES
+% ============================================================================
+\chapter{Routes Backend Complètes}
+
+\section{Introduction aux Routes API}
+
+Les routes API définissent les endpoints que les clients peuvent appeler pour interagir avec votre application. Chaque route correspond à une fonctionnalité spécifique.
+
+\begin{definitionbox}
+    \textbf{Route API} : Chemin URL qui correspond à une fonction de gestionnaire spécifique. Quand une requête correspond au chemin et à la méthode HTTP, le gestionnaire associé est exécuté.
+\end{definitionbox}
+
+\section{Structure des Routes}
+
+Organisez vos routes par fonctionnalité dans le dossier \texttt{routes/} :
+
+\begin{lstlisting}[style=bash, caption=Structure du dossier routes]
+routes/
+├── auth.js          # Routes d'authentification
+├── blogs.js         # Routes des blogs
+└── commentaires.js  # Routes des commentaires
+\end{lstlisting}
+
+\section{Routes d'Authentification (routes/auth.js)}
+
+\begin{lstlisting}[style=javascript, caption=routes/auth.js - Routes d'authentification complètes]
+const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const db = require('../db');
+
+const router = express.Router();
+
+// ============================================================================
+// POST /api/auth/register - Inscription
+// ============================================================================
+
+router.post('/register', async (req, res) => {
+    try {
+        const { email, password, nom, prenom } = req.body;
+        
+        // Validation
+        if (!email || !password || !nom || !prenom) {
+            return res.status(400).json({ 
+                error: 'Tous les champs sont obligatoires' 
+            });
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ 
+                error: 'Email invalide' 
+            });
+        }
+        
+        if (password.length < 8) {
+            return res.status(400).json({ 
+                error: 'Le mot de passe doit contenir au moins 8 caractères' 
+            });
+        }
+        
+        // Vérification si l'email existe déjà
+        const existingUser = await db.query(
+            'SELECT id FROM users WHERE email = $1',
+            [email]
+        );
+        
+        if (existingUser.rows.length > 0) {
+            return res.status(409).json({ 
+                error: 'Cet email est déjà utilisé' 
+            });
+        }
+        
+        // Hachage du mot de passe
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(password, saltRounds);
+        
+        // Insertion
+        const result = await db.query(
+            `INSERT INTO users (email, password_hash, nom, prenom)
+             VALUES ($1, $2, $3, $4)
+             RETURNING id, email, nom, prenom, role, date_creation`,
+            [email, password_hash, nom, prenom]
+        );
+        
+        const user = result.rows[0];
+        
+        res.status(201).json({
+            message: 'Inscription réussie',
+            user: {
+                id: user.id,
+                email: user.email,
+                nom: user.nom,
+                prenom: user.prenom,
+                role: user.role
+            }
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de l\'inscription:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de l\'inscription' 
+        });
+    }
+});
+
+// ============================================================================
+// POST /api/auth/login - Connexion
+// ============================================================================
+
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ 
+                error: 'Email et mot de passe requis' 
+            });
+        }
+        
+        // Recherche de l'utilisateur
+        const result = await db.query(
+            'SELECT * FROM users WHERE email = $1',
+            [email]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(401).json({ 
+                error: 'Email ou mot de passe incorrect' 
+            });
+        }
+        
+        const user = result.rows[0];
+        
+        // Vérification du mot de passe
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
+        
+        if (!isValidPassword) {
+            return res.status(401).json({ 
+                error: 'Email ou mot de passe incorrect' 
+            });
+        }
+        
+        // Génération du token
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                email: user.email,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+        
+        res.json({
+            message: 'Connexion réussie',
+            token: token,
+            user: {
+                id: user.id,
+                email: user.email,
+                nom: user.nom,
+                prenom: user.prenom,
+                role: user.role
+            }
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la connexion:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la connexion' 
+        });
+    }
+});
+
+module.exports = router;
+\end{lstlisting}
+
+\section{Routes des Blogs (routes/blogs.js)}
+
+\begin{lstlisting}[style=javascript, caption=routes/blogs.js - Routes des blogs complètes]
+const express = require('express');
+const db = require('../db');
+const verifierConnexion = require('../middleware/auth');
+const { verifierAuteur } = require('../middleware/roles');
+
+const router = express.Router();
+
+// ============================================================================
+// GET /api/blogs - Récupérer tous les blogs (public)
+// ============================================================================
+
+router.get('/', async (req, res) => {
+    try {
+        const result = await db.query(`
+            SELECT b.*, u.nom as auteur_nom, u.prenom as auteur_prenom
+            FROM blogs b
+            JOIN users u ON b.auteur_id = u.id
+            ORDER BY b.date_creation DESC
+        `);
+        
+        res.json({
+            count: result.rows.length,
+            blogs: result.rows
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la récupération des blogs:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la récupération des blogs' 
+        });
+    }
+});
+
+// ============================================================================
+// GET /api/blogs/:id - Récupérer un blog par ID (public)
+// ============================================================================
+
+router.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const result = await db.query(`
+            SELECT b.*, u.nom as auteur_nom, u.prenom as auteur_prenom
+            FROM blogs b
+            JOIN users u ON b.auteur_id = u.id
+            WHERE b.id = $1
+        `, [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ 
+                error: 'Blog non trouvé' 
+            });
+        }
+        
+        // Récupération des commentaires
+        const commentairesResult = await db.query(`
+            SELECT c.*, u.nom as auteur_nom, u.prenom as auteur_prenom
+            FROM commentaires c
+            JOIN users u ON c.auteur_id = u.id
+            WHERE c.blog_id = $1
+            ORDER BY c.date_creation ASC
+        `, [id]);
+        
+        const blog = result.rows[0];
+        blog.commentaires = commentairesResult.rows;
+        
+        res.json(blog);
+        
+    } catch (err) {
+        console.error('Erreur lors de la récupération du blog:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la récupération du blog' 
+        });
+    }
+});
+
+// ============================================================================
+// POST /api/blogs - Créer un blog (protégé, rôle auteur requis)
+// ============================================================================
+
+router.post('/', verifierConnexion, verifierAuteur, async (req, res) => {
+    try {
+        const { titre, contenu } = req.body;
+        const auteur_id = req.user.userId;
+        
+        // Validation
+        if (!titre || !contenu) {
+            return res.status(400).json({ 
+                error: 'Titre et contenu requis' 
+            });
+        }
+        
+        if (titre.length < 3 || titre.length > 255) {
+            return res.status(400).json({ 
+                error: 'Le titre doit contenir entre 3 et 255 caractères' 
+            });
+        }
+        
+        if (contenu.length < 10) {
+            return res.status(400).json({ 
+                error: 'Le contenu doit contenir au moins 10 caractères' 
+            });
+        }
+        
+        // Insertion
+        const result = await db.query(
+            `INSERT INTO blogs (titre, contenu, auteur_id)
+             VALUES ($1, $2, $3)
+             RETURNING *`,
+            [titre, contenu, auteur_id]
+        );
+        
+        const blog = result.rows[0];
+        
+        res.status(201).json({
+            message: 'Blog créé avec succès',
+            blog: blog
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la création du blog:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la création du blog' 
+        });
+    }
+});
+
+// ============================================================================
+// PUT /api/blogs/:id - Modifier un blog (protégé, auteur ou admin)
+// ============================================================================
+
+router.put('/:id', verifierConnexion, verifierAuteur, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { titre, contenu } = req.body;
+        const userId = req.user.userId;
+        const userRole = req.user.role;
+        
+        // Validation
+        if (!titre || !contenu) {
+            return res.status(400).json({ 
+                error: 'Titre et contenu requis' 
+            });
+        }
+        
+        // Vérification que le blog existe
+        const blogResult = await db.query(
+            'SELECT * FROM blogs WHERE id = $1',
+            [id]
+        );
+        
+        if (blogResult.rows.length === 0) {
+            return res.status(404).json({ 
+                error: 'Blog non trouvé' 
+            });
+        }
+        
+        const blog = blogResult.rows[0];
+        
+        // Vérification des permissions
+        if (blog.auteur_id !== userId && userRole !== 'admin') {
+            return res.status(403).json({ 
+                error: 'Vous n\'êtes pas autorisé à modifier ce blog' 
+            });
+        }
+        
+        // Mise à jour
+        const result = await db.query(
+            `UPDATE blogs 
+             SET titre = $1, contenu = $2, date_modification = CURRENT_TIMESTAMP
+             WHERE id = $3
+             RETURNING *`,
+            [titre, contenu, id]
+        );
+        
+        res.json({
+            message: 'Blog modifié avec succès',
+            blog: result.rows[0]
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la modification du blog:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la modification du blog' 
+        });
+    }
+});
+
+// ============================================================================
+// DELETE /api/blogs/:id - Supprimer un blog (protégé, auteur ou admin)
+// ============================================================================
+
+router.delete('/:id', verifierConnexion, verifierAuteur, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId;
+        const userRole = req.user.role;
+        
+        // Vérification que le blog existe
+        const blogResult = await db.query(
+            'SELECT * FROM blogs WHERE id = $1',
+            [id]
+        );
+        
+        if (blogResult.rows.length === 0) {
+            return res.status(404).json({ 
+                error: 'Blog non trouvé' 
+            });
+        }
+        
+        const blog = blogResult.rows[0];
+        
+        // Vérification des permissions
+        if (blog.auteur_id !== userId && userRole !== 'admin') {
+            return res.status(403).json({ 
+                error: 'Vous n\'êtes pas autorisé à supprimer ce blog' 
+            });
+        }
+        
+        // Suppression
+        await db.query('DELETE FROM blogs WHERE id = $1', [id]);
+        
+        res.json({ 
+            message: 'Blog supprimé avec succès' 
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la suppression du blog:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la suppression du blog' 
+        });
+    }
+});
+
+module.exports = router;
+\end{lstlisting}
+
+\section{Routes des Commentaires (routes/commentaires.js)}
+
+\begin{lstlisting}[style=javascript, caption=routes/commentaires.js - Routes des commentaires complètes]
+const express = require('express');
+const db = require('../db');
+const verifierConnexion = require('../middleware/auth');
+
+const router = express.Router();
+
+// ============================================================================
+// POST /api/commentaires - Créer un commentaire (protégé)
+// ============================================================================
+
+router.post('/', verifierConnexion, async (req, res) => {
+    try {
+        const { contenu, blog_id } = req.body;
+        const auteur_id = req.user.userId;
+        
+        // Validation
+        if (!contenu || !blog_id) {
+            return res.status(400).json({ 
+                error: 'Contenu et blog ID requis' 
+            });
+        }
+        
+        if (contenu.length < 3) {
+            return res.status(400).json({ 
+                error: 'Le commentaire doit contenir au moins 3 caractères' 
+            });
+        }
+        
+        // Vérification que le blog existe
+        const blogResult = await db.query(
+            'SELECT id FROM blogs WHERE id = $1',
+            [blog_id]
+        );
+        
+        if (blogResult.rows.length === 0) {
+            return res.status(404).json({ 
+                error: 'Blog non trouvé' 
+            });
+        }
+        
+        // Insertion
+        const result = await db.query(
+            `INSERT INTO commentaires (contenu, auteur_id, blog_id)
+             VALUES ($1, $2, $3)
+             RETURNING *`,
+            [contenu, auteur_id, blog_id]
+        );
+        
+        const commentaire = result.rows[0];
+        
+        res.status(201).json({
+            message: 'Commentaire créé avec succès',
+            commentaire: commentaire
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la création du commentaire:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la création du commentaire' 
+        });
+    }
+});
+
+// ============================================================================
+// DELETE /api/commentaires/:id - Supprimer un commentaire (protégé)
+// ============================================================================
+
+router.delete('/:id', verifierConnexion, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId;
+        const userRole = req.user.role;
+        
+        // Vérification que le commentaire existe
+        const commentaireResult = await db.query(
+            'SELECT * FROM commentaires WHERE id = $1',
+            [id]
+        );
+        
+        if (commentaireResult.rows.length === 0) {
+            return res.status(404).json({ 
+                error: 'Commentaire non trouvé' 
+            });
+        }
+        
+        const commentaire = commentaireResult.rows[0];
+        
+        // Vérification des permissions
+        if (commentaire.auteur_id !== userId && userRole !== 'admin') {
+            return res.status(403).json({ 
+                error: 'Vous n\'êtes pas autorisé à supprimer ce commentaire' 
+            });
+        }
+        
+        // Suppression
+        await db.query('DELETE FROM commentaires WHERE id = $1', [id]);
+        
+        res.json({ 
+            message: 'Commentaire supprimé avec succès' 
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de la suppression du commentaire:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de la suppression du commentaire' 
+        });
+    }
+});
+
+module.exports = router;
+\end{lstlisting}
+
+\section{Async/Await et Try/Catch}
+
+\begin{definitionbox}
+    \textbf{async/await} : Syntaxe JavaScript pour travailler avec des promesses de manière synchrone. \texttt{async} déclare une fonction asynchrone, \texttt{await} attend la résolution d'une promesse.
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript, caption=Pattern async/await avec try/catch]
+router.get('/blogs', async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM blogs');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Erreur:', err);
+        res.status(500).json({ error: 'Erreur' });
+    }
+});
+\end{lstlisting}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques Async/Await} :
+    \begin{itemize}
+        \item Toujours utiliser try/catch avec async/await
+        \item Toujours logger les erreurs côté serveur
+        \item Ne jamais exposer les détails de l'erreur au client
+        \item Utiliser des codes HTTP appropriés
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Validation des Données}
+
+\begin{bestpracticebox}
+    \textbf{Règles de Validation} :
+    \begin{itemize}
+        \item Toujours valider les données côté serveur
+        \item Ne jamais faire confiance aux données du client
+        \item Valider la présence, le type et le format des données
+        \item Valider les longueurs minimales et maximales
+        \item Retourner des messages d'erreur clairs
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Codes de Statut HTTP}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Code} & \textbf{Signification} & \textbf{Utilisation} \\
+\hline
+200 & OK & Requête réussie \\
+\hline
+201 & Created & Ressource créée \\
+\hline
+400 & Bad Request & Requête invalide \\
+\hline
+401 & Unauthorized & Non authentifié \\
+\hline
+403 & Forbidden & Authentifié mais non autorisé \\
+\hline
+404 & Not Found & Ressource non trouvée \\
+\hline
+409 & Conflict & Conflit (ex: email déjà utilisé) \\
+\hline
+500 & Internal Server Error & Erreur serveur \\
+\hline
+\end{tabular}
+\caption{Codes de statut HTTP courants}
+\end{table}
+
+% ============================================================================
+% CHAPITRE 12 : SÉCURITÉ - INJECTION SQL
+% ============================================================================
+\chapter{Sécurité — Injection SQL}
+
+\section{Introduction à l'Injection SQL}
+
+L'injection SQL est l'une des vulnérabilités les plus dangereuses et les plus courantes dans les applications web. Elle peut permettre à un attaquant de voler, modifier ou supprimer des données.
+
+\begin{definitionbox}
+    \textbf{Injection SQL} : Vulnérabilité de sécurité qui permet à un attaquant d'injecter du code SQL malveillant dans des requêtes, manipulant ainsi la base de données de manière non autorisée.
+\end{definitionbox}
+
+\begin{securitybox}
+    \textbf{Statistiques OWASP} :
+    \begin{itemize}
+        \item L'injection SQL est classée \#1 dans le Top 10 OWASP depuis 2007
+        \item Elle affecte environ 20\% des applications web
+        \item Elle peut causer des pertes financières massives
+        \item Elle peut entraîner des violations de données catastrophiques
+    \end{itemize}
+\end{securitybox}
+
+\section{Comment Fonctionne l'Injection SQL ?}
+
+\subsection{Exemple de Code Vulnérable}
+
+\begin{errorbox}
+    \textbf{CODE VULNÉRABLE - NE JAMAIS UTILISER}
+    
+    \begin{lstlisting}[style=javascript]
+const email = req.body.email;
+const query = `SELECT * FROM users WHERE email = '${email}'`;
+const result = await db.query(query);
+    \end{lstlisting}
+\end{errorbox}
+
+\subsection{Attaque par Injection SQL}
+
+Si un attaquant entre comme email :
+\texttt{' OR '1'='1}
+
+La requête devient :
+\begin{lstlisting}[style=sql]
+SELECT * FROM users WHERE email = '' OR '1'='1'
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Analyse de l'Attaque} :
+    \begin{itemize}
+        \item \texttt{'} : Ferme la chaîne originale
+        \item \texttt{OR} : Opérateur logique
+        \item \texttt{'1'='1'} : Condition toujours vraie
+    \end{itemize}
+\end{definitionbox}
+
+\textbf{Résultat} : La requête retourne TOUS les utilisateurs de la base de données, contournant l'authentification.
+
+\section{Conséquences de l'Injection SQL}
+
+\subsection{Contournement de l'Authentification}
+
+\begin{lstlisting}[style=sql]
+-- Attaque
+SELECT * FROM users WHERE email = '' OR '1'='1' --' AND password = '...'
+\end{lstlisting}
+
+L'attaquant peut se connecter sans connaître le mot de passe.
+
+\subsection{Vol de Données}
+
+\begin{lstlisting}[style=sql]
+-- Attaque
+SELECT * FROM users WHERE email = 'x' UNION SELECT username, password FROM admin_users
+\end{lstlisting}
+
+L'attaquant peut extraire des données d'autres tables.
+
+\subsection{Suppression de Données}
+
+\begin{lstlisting}[style=sql]
+-- Attaque
+SELECT * FROM users WHERE email = 'x'; DROP TABLE users; --
+\end{lstlisting}
+
+L'attaquant peut supprimer des tables entières.
+
+\section{La Solution : Requêtes Paramétrées}
+
+\subsection{Requêtes Paramétrées (Parameterized Queries)}
+
+\begin{bestpracticebox}
+    \textbf{SOLUTION SÉCURISÉE - TOUJOURS UTILISER}
+    
+    \begin{lstlisting}[style=javascript]
+const email = req.body.email;
+const result = await db.query(
+    'SELECT * FROM users WHERE email = $1',
+    [email]
+);
+    \end{lstlisting}
+\end{bestpracticebox}
+
+\begin{definitionbox}
+    \textbf{Requête Paramétrée} : Requête SQL où les valeurs sont transmises séparément du code SQL, utilisant des placeholders (\$1, \$2, ...). Le driver sépare le code SQL des données, empêchant l'injection.
+\end{definitionbox}
+
+\subsection{Comment ça Fonctionne ?}
+
+\begin{enumerate}
+    \item Le driver envoie le code SQL au serveur PostgreSQL
+    \item PostgreSQL analyse et prépare la requête
+    \item Le driver envoie les paramètres séparément
+    \item PostgreSQL exécute la requête avec les paramètres
+    \item Les paramètres sont traités comme des données, pas comme du code
+\end{enumerate}
+
+\begin{analogybox}
+    \textbf{Analogie du Formulaire Administratif} :
+    \begin{itemize}
+        \item \textbf{Injection SQL} : Quelqu'un écrit des instructions dans la case "Nom" d'un formulaire
+        \item \textbf{Requêtes Paramétrées} : Le formulaire a des cases séparées pour chaque information, et le système traite chaque case comme une donnée, pas comme une instruction
+    \end{itemize}
+\end{analogybox}
+
+\section{Exemples de Requêtes Sécurisées}
+
+\subsection{INSERT Sécurisé}
+
+\begin{lstlisting}[style=javascript, caption=INSERT sécurisé avec paramètres]
+const result = await db.query(
+    `INSERT INTO users (email, password_hash, nom, prenom)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *`,
+    [email, password_hash, nom, prenom]
+);
+\end{lstlisting}
+
+\subsection{UPDATE Sécurisé}
+
+\begin{lstlisting}[style=javascript, caption=UPDATE sécurisé avec paramètres]
+const result = await db.query(
+    `UPDATE blogs 
+     SET titre = $1, contenu = $2 
+     WHERE id = $3
+     RETURNING *`,
+    [titre, contenu, id]
+);
+\end{lstlisting}
+
+\subsection{DELETE Sécurisé}
+
+\begin{lstlisting}[style=javascript, caption=DELETE sécurisé avec paramètres]
+await db.query(
+    'DELETE FROM blogs WHERE id = $1',
+    [id]
+);
+\end{lstlisting}
+
+\section{Pourquoi les ORM ne Sont Pas une Solution Magique}
+
+\begin{warningbox}
+    \textbf{Attention} : Même avec un ORM, vous pouvez être vulnérable si vous utilisez incorrectement les requêtes brutes ou la concaténation de chaînes.
+\end{warningbox}
+
+\begin{lstlisting}[style=javascript, caption=Code vulnérable même avec ORM]
+// Même avec un ORM, c'est vulnérable
+const query = `SELECT * FROM users WHERE email = '${email}'`;
+const result = await sequelize.query(query);
+\end{lstlisting}
+
+\begin{bestpracticebox}
+    \textbf{Règle d'Or} :
+    \begin{itemize}
+        \item JAMAIS concaténer des chaînes pour construire des requêtes SQL
+        \item TOUJOURS utiliser des requêtes paramétrées
+        \item TOUJOURS utiliser les placeholders (\$1, \$2, ...)
+        \item TOUJOURS valider et nettoyer les entrées utilisateur
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Autres Mesures de Sécurité SQL}
+
+\subsection{Principe du Moindre Privilège}
+
+\begin{definitionbox}
+    \textbf{Principe du Moindre Privilège} : Chaque utilisateur de la base de données ne doit avoir que les permissions minimales nécessaires pour effectuer son travail.
+\end{definitionbox}
+
+\begin{lstlisting}[style=sql, caption=Création d'un utilisateur avec permissions limitées]
+CREATE USER blog_app WITH PASSWORD 'secure_password';
+
+GRANT CONNECT ON DATABASE blog_db TO blog_app;
+GRANT USAGE ON SCHEMA public TO blog_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO blog_app;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO blog_app;
+\end{lstlisting}
+
+\subsection{Validation des Entrées}
+
+\begin{lstlisting}[style=javascript, caption=Validation des entrées]
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function validateString(input, minLength, maxLength) {
+    return typeof input === 'string' && 
+           input.length >= minLength && 
+           input.length <= maxLength;
+}
+\end{lstlisting}
+
+\section{Outils de Détection d'Injection SQL}
+
+\begin{itemize}
+    \item \textbf{SQLMap} : Outil open-source de détection et d'exploitation d'injection SQL
+    \item \textbf{OWASP ZAP} : Scanner de vulnérabilités web
+    \item \textbf{Burp Suite} : Outil de test de sécurité web
+    \item \textbf{Static Analysis Tools} : Outils d'analyse statique de code
+\end{itemize}
+
+\section{Bonnes Pratiques de Sécurité SQL}
+
+\begin{bestpracticebox}
+    \textbf{Checklist de Sécurité SQL} :
+    \begin{itemize}
+        \item \textbf{TOUJOURS} utiliser des requêtes paramétrées
+        \item \textbf{JAMAIS} concaténer des chaînes pour des requêtes SQL
+        \item \textbf{TOUJOURS} valider les entrées utilisateur
+        \item \textbf{TOUJOURS} appliquer le principe du moindre privilège
+        \item \textbf{TOUJOURS} utiliser des comptes de base de données séparés
+        \item \textbf{RÉGULIÈREMENT} auditer votre code pour les vulnérabilités
+        \item \textbf{RÉGULIÈREMENT} mettre à jour vos dépendances
+    \end{itemize}
+\end{bestpracticebox}
+
+\begin{securitybox}
+    \textbf{Message Important} :
+    La sécurité commence à la PREMIÈRE requête SQL que vous écrivez. Chaque requête non sécurisée est une porte ouverte pour les attaquants. Prenez le temps d'écrire du code sécurisé dès le début.
+\end{securitybox}
+
+% ============================================================================
+% CHAPITRE 13 : FRONTEND HTML/CSS/VANILLA JS
+% ============================================================================
+\chapter{Frontend HTML/CSS/Vanilla JS}
+
+\section{Introduction au Frontend}
+
+Le frontend est la partie de l'application que l'utilisateur voit et avec laquelle il interagit. Dans notre projet, nous utilisons HTML, CSS et JavaScript vanilla (sans framework).
+
+\begin{definitionbox}
+    \textbf{Frontend} : Partie client d'une application web, responsable de l'interface utilisateur et de l'interaction avec l'utilisateur. Il s'exécute dans le navigateur web.
+\end{definitionbox}
+
+\section{Page de Connexion (login.html)}
+
+\begin{lstlisting}[style=html, caption=public/login.html - Page de connexion]
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Blog Multi-Rôle</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-form">
+            <h1>Connexion</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required
+                        placeholder="votre@email.com"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                        placeholder="••••••••"
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    Se connecter
+                </button>
+            </form>
+            
+            <p class="auth-link">
+                Pas encore de compte ? 
+                <a href="register.html">S'inscrire</a>
+            </p>
+        </div>
+    </div>
+    
+    <script src="js/login.js"></script>
+</body>
+</html>
+\end{lstlisting}
+
+\section{Page d'Inscription (register.html)}
+
+\begin{lstlisting}[style=html, caption=public/register.html - Page d'inscription]
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Blog Multi-Rôle</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-form">
+            <h1>Inscription</h1>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input 
+                        type="text" 
+                        id="nom" 
+                        name="nom" 
+                        required
+                        placeholder="Votre nom"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input 
+                        type="text" 
+                        id="prenom" 
+                        name="prenom" 
+                        required
+                        placeholder="Votre prénom"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required
+                        placeholder="votre@email.com"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                        placeholder="••••••••"
+                        minlength="8"
+                    >
+                    <small class="form-hint">
+                        Au moins 8 caractères
+                    </small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    S'inscrire
+                </button>
+            </form>
+            
+            <p class="auth-link">
+                Déjà un compte ? 
+                <a href="login.html">Se connecter</a>
+            </p>
+        </div>
+    </div>
+    
+    <script src="js/register.js"></script>
+</body>
+</html>
+\end{lstlisting}
+
+\section{Page d'Accueil (index.html)}
+
+\begin{lstlisting}[style=html, caption=public/index.html - Page d'accueil]
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Multi-Rôle</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">Blog Multi-Rôle</h1>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <span id="authLinks"></span>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <div class="blog-header">
+            <h2>Articles Récents</h2>
+            <button id="createBlogBtn" class="btn btn-primary" style="display: none;">
+                Créer un article
+            </button>
+        </div>
+        
+        <div id="blogsContainer" class="blogs-grid">
+            <p>Chargement des articles...</p>
+        </div>
+    </main>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
+\end{lstlisting}
+
+\section{Feuille de Style (css/style.css)}
+
+\begin{lstlisting}[style=css, caption=public/css/style.css - Feuille de style]
+/* ============================================================================
+* RESET ET BASE
+* ============================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* ============================================================================
+* NAVBAR
+* ============================================================================ */
+
+.navbar {
+    background-color: #003366;
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #66b2ff;
+}
+
+/* ============================================================================
+* CONTAINER
+* ============================================================================ */
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* ============================================================================
+* FORMULAIRE D'AUTHENTIFICATION
+* ============================================================================ */
+
+.auth-form {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #003366;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #003366;
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+}
+
+.form-hint {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.auth-link a {
+    color: #003366;
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================================
+* BOUTONS
+* ============================================================================ */
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #003366;
+    color: white;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #0066cc;
+}
+
+/* ============================================================================
+* BLOGS GRID
+* ============================================================================ */
+
+.blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.blogs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.blog-card h3 {
+    color: #003366;
+    margin-bottom: 1rem;
+}
+
+.blog-card .blog-meta {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.blog-card .blog-excerpt {
+    color: #333;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.blog-card .btn {
+    width: auto;
+}
+
+/* ============================================================================
+* RESPONSIVE
+* ============================================================================ */
+
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .blogs-grid {
+        grid-template-columns: 1fr;
+    }
+}
+\end{lstlisting}
+
+\section{JavaScript de Connexion (js/login.js)}
+
+\begin{lstlisting}[style=javascript, caption=public/js/login.js - Script de connexion]
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Stockage du token dans localStorage
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            // Redirection vers l'accueil
+            window.location.href = 'index.html';
+        } else {
+            alert(data.error || 'Erreur de connexion');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur de connexion');
+    }
+});
+\end{lstlisting}
+
+\section{JavaScript d'Inscription (js/register.js)}
+
+\begin{lstlisting}[style=javascript, caption=public/js/register.js - Script d'inscription]
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const nom = document.getElementById('nom').value;
+    const prenom = document.getElementById('prenom').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nom, prenom, email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
+            window.location.href = 'login.html';
+        } else {
+            alert(data.error || 'Erreur d\'inscription');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur d\'inscription');
+    }
+});
+\end{lstlisting}
+
+\section{JavaScript Principal (js/app.js)}
+
+\begin{lstlisting}[style=javascript, caption=public/js/app.js - Script principal]
+// ============================================================================
+* VARIABLES GLOBALES
+* ============================================================================ */
+
+let currentUser = null;
+
+// ============================================================================
+* INITIALISATION
+* ============================================================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    loadBlogs();
+});
+
+// ============================================================================
+* VÉRIFICATION DE L'AUTHENTIFICATION
+* ============================================================================ */
+
+function checkAuth() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (token && user) {
+        currentUser = JSON.parse(user);
+        updateAuthLinks(true);
+        
+        // Afficher le bouton de création si l'utilisateur est auteur ou admin
+        if (currentUser.role === 'auteur' || currentUser.role === 'admin') {
+            document.getElementById('createBlogBtn').style.display = 'block';
+        }
+    } else {
+        updateAuthLinks(false);
+    }
+}
+
+function updateAuthLinks(isAuthenticated) {
+    const authLinks = document.getElementById('authLinks');
+    
+    if (isAuthenticated) {
+        authLinks.innerHTML = `
+            <span>Bonjour, ${currentUser.prenom}</span>
+            <a href="#" onclick="logout()" class="nav-link">Déconnexion</a>
+        `;
+    } else {
+        authLinks.innerHTML = `
+            <a href="login.html" class="nav-link">Connexion</a>
+            <a href="register.html" class="nav-link">Inscription</a>
+        `;
+    }
+}
+
+// ============================================================================
+* CHARGEMENT DES BLOGS
+* ============================================================================ */
+
+async function loadBlogs() {
+    const container = document.getElementById('blogsContainer');
+    
+    try {
+        const response = await fetch('/api/blogs');
+        const data = await response.json();
+        
+        if (response.ok) {
+            container.innerHTML = data.blogs.map(blog => `
+                <div class="blog-card">
+                    <h3>${escapeHtml(blog.titre)}</h3>
+                    <div class="blog-meta">
+                        Par ${blog.auteur_prenom} ${blog.auteur_nom} • 
+                        ${new Date(blog.date_creation).toLocaleDateString('fr-FR')}
+                    </div>
+                    <div class="blog-excerpt">
+                        ${escapeHtml(blog.contenu.substring(0, 150))}...
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<p>Erreur lors du chargement des articles</p>';
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        container.innerHTML = '<p>Erreur lors du chargement des articles</p>';
+    }
+}
+
+// ============================================================================
+* DÉCONNEXION
+* ============================================================================ */
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    currentUser = null;
+    window.location.href = 'index.html';
+}
+
+// ============================================================================
+* UTILITAIRES
+* ============================================================================ */
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+\end{lstlisting}
+
+\section{API Fetch}
+
+\begin{definitionbox}
+    \textbf{Fetch API} : Interface JavaScript pour faire des requêtes HTTP. Elle est plus moderne et plus puissante que XMLHttpRequest, avec une syntaxe basée sur les promesses.
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript, caption=Exemple de requête fetch]
+fetch('/api/blogs')
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Erreur:', error));
+\end{lstlisting}
+
+\section{LocalStorage}
+
+\begin{definitionbox}
+    \textbf{localStorage} : API de stockage web qui permet de stocker des données dans le navigateur de manière persistante. Les données restent même après la fermeture du navigateur.
+\end{definitionbox}
+
+\begin{lstlisting}[style=javascript, caption=Utilisation de localStorage]
+// Stockage
+localStorage.setItem('token', 'votre_token');
+localStorage.setItem('user', JSON.stringify(userObject));
+
+// Récupération
+const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('user'));
+
+// Suppression
+localStorage.removeItem('token');
+localStorage.clear();
+\end{lstlisting}
+
+\begin{warningbox}
+    \textbf{Attention XSS} : localStorage est vulnérable aux attaques XSS. Si un attaquant peut injecter du JavaScript malveillant dans votre page, il peut accéder à localStorage. En production, utilisez des cookies httpOnly pour les tokens sensibles.
+\end{warningbox}
+
+\section{Risques XSS}
+
+\begin{definitionbox}
+    \textbf{XSS (Cross-Site Scripting)} : Vulnérabilité qui permet à un attaquant d'injecter du script malveillant dans des pages web vues par d'autres utilisateurs.
+\end{definitionbox}
+
+\begin{bestpracticebox}
+    \textbf{Prévention XSS} :
+    \begin{itemize}
+        \item Toujours échapper le contenu utilisateur avant l'affichage
+        \item Utiliser \texttt{textContent} au lieu de \texttt{innerHTML}
+        \item Valider et nettoyer les entrées
+        \item Utiliser des CSP (Content Security Policy)
+    \end{itemize}
+\end{bestpracticebox}
+
+\begin{lstlisting}[style=javascript, caption=Échappement HTML]
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+\end{lstlisting}
+
+% ============================================================================
+% CHAPITRE 14 : TESTS MANUELS AVEC POSTMAN
+% ============================================================================
+\chapter{Tests Manuels avec Postman}
+
+\section{Introduction à Postman}
+
+Postman est un outil populaire pour tester des API. Il permet d'envoyer des requêtes HTTP et de visualiser les réponses sans avoir besoin d'une interface utilisateur.
+
+\begin{definitionbox}
+    \textbf{Postman} : Application de collaboration pour le développement d'API. Elle permet de créer, tester, documenter et surveiller des API.
+\end{definitionbox}
+
+\section{Installation de Postman}
+
+Téléchargez Postman depuis \url{https://www.postman.com/downloads/} et installez-le sur votre machine.
+
+\section{Test de l'Inscription}
+
+\subsection{Configuration de la Requête}
+
+\begin{itemize}
+    \item \textbf{Méthode} : POST
+    \item \textbf{URL} : \texttt{http://localhost:3000/api/auth/register}
+    \item \textbf{Headers} :
+        \begin{itemize}
+            \item \texttt{Content-Type}: \texttt{application/json}
+        \end{itemize}
+    \item \textbf{Body} (JSON) :
+\end{itemize}
+
+\begin{lstlisting}[style=javascript]
+{
+    "email": "test@example.com",
+    "password": "password123",
+    "nom": "Dupont",
+    "prenom": "Jean"
+}
+\end{lstlisting}
+
+\subsection{Réponse Attendue}
+
+\begin{lstlisting}[style=javascript]
+{
+    "message": "Inscription réussie",
+    "user": {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "email": "test@example.com",
+        "nom": "Dupont",
+        "prenom": "Jean",
+        "role": "utilisateur"
+    }
+}
+\end{lstlisting}
+
+\section{Test de la Connexion}
+
+\subsection{Configuration de la Requête}
+
+\begin{itemize}
+    \item \textbf{Méthode} : POST
+    \item \textbf{URL} : \texttt{http://localhost:3000/api/auth/login}
+    \item \textbf{Headers} :
+        \begin{itemize}
+            \item \texttt{Content-Type}: \texttt{application/json}
+        \end{itemize}
+    \item \textbf{Body} (JSON) :
+\end{itemize}
+
+\begin{lstlisting}[style=javascript]
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+\end{lstlisting}
+
+\subsection{Réponse Attendue}
+
+\begin{lstlisting}[style=javascript]
+{
+    "message": "Connexion réussie",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "email": "test@example.com",
+        "nom": "Dupont",
+        "prenom": "Jean",
+        "role": "utilisateur"
+    }
+}
+\end{lstlisting}
+
+\section{Test de Récupération des Blogs}
+
+\subsection{Configuration de la Requête}
+
+\begin{itemize}
+    \item \textbf{Méthode} : GET
+    \item \textbf{URL} : \texttt{http://localhost:3000/api/blogs}
+    \item \textbf{Headers} : Aucun (route publique)
+\end{itemize}
+
+\subsection{Réponse Attendue}
+
+\begin{lstlisting}[style=javascript]
+{
+    "count": 2,
+    "blogs": [
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "titre": "Mon Premier Article",
+            "contenu": "Ceci est le contenu de mon article...",
+            "auteur_id": "550e8400-e29b-41d4-a716-446655440000",
+            "date_creation": "2024-01-15T10:30:00.000Z",
+            "date_modification": "2024-01-15T10:30:00.000Z",
+            "auteur_nom": "Dupont",
+            "auteur_prenom": "Jean"
+        }
+    ]
+}
+\end{lstlisting}
+
+\section{Test de Création d'un Blog}
+
+\subsection{Configuration de la Requête}
+
+\begin{itemize}
+    \item \textbf{Méthode} : POST
+    \item \textbf{URL} : \texttt{http://localhost:3000/api/blogs}
+    \item \textbf{Headers} :
+        \begin{itemize}
+            \item \texttt{Content-Type}: \texttt{application/json}
+            \item \texttt{Authorization}: \texttt{Bearer <votre\_token>}
+        \end{itemize}
+    \item \textbf{Body} (JSON) :
+\end{itemize}
+
+\begin{lstlisting}[style=javascript]
+{
+    "titre": "Mon Nouvel Article",
+    "contenu": "Ceci est le contenu de mon nouvel article..."
+}
+\end{lstlisting}
+
+\subsection{Réponse Attendue}
+
+\begin{lstlisting}[style=javascript]
+{
+    "message": "Blog créé avec succès",
+    "blog": {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "titre": "Mon Nouvel Article",
+        "contenu": "Ceci est le contenu de mon nouvel article...",
+        "auteur_id": "550e8400-e29b-41d4-a716-446655440000",
+        "date_creation": "2024-01-15T10:30:00.000Z",
+        "date_modification": "2024-01-15T10:30:00.000Z"
+    }
+}
+\end{lstlisting}
+
+\section{Collection Postman}
+
+Créez une collection Postman pour organiser vos tests :
+
+\begin{lstlisting}[style=bash, caption=Structure de collection Postman]
+Blog API Collection
+├── Authentification
+│   ├── POST /register
+│   └── POST /login
+├── Blogs
+│   ├── GET /blogs
+│   ├── GET /blogs/:id
+│   ├── POST /blogs
+│   ├── PUT /blogs/:id
+│   └── DELETE /blogs/:id
+└── Commentaires
+    ├── POST /commentaires
+    └── DELETE /commentaires/:id
+\end{lstlisting}
+
+\section{Variables d'Environnement Postman}
+
+Utilisez des variables d'environnement pour stocker le token :
+
+\begin{enumerate}
+    \item Créez une variable \texttt{token} dans l'environnement Postman
+    \item Après la connexion, utilisez un script de test pour stocker le token :
+\end{enumerate}
+
+\begin{lstlisting}[style=javascript, caption=Script de test Postman]
+if (pm.response.code === 200) {
+    const jsonData = pm.response.json();
+    pm.environment.set("token", jsonData.token);
+}
+\end{lstlisting}
+
+\section{Tests Automatisés dans Postman}
+
+Postman permet d'écrire des tests automatisés pour chaque requête :
+
+\begin{lstlisting}[style=javascript, caption=Exemple de test Postman]
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Response has token", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData.token).to.exist;
+});
+
+pm.test("Response has user object", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData.user).to.exist;
+    pm.expect(jsonData.user.email).to.eql("test@example.com");
+});
+\end{lstlisting}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques de Test API} :
+    \begin{itemize}
+        \item Testez tous les codes de statut attendus
+        \item Testez les cas d'erreur
+        \item Testez la validation des données
+        \item Testez l'authentification et l'autorisation
+        \item Utilisez des collections pour organiser les tests
+        \item Utilisez des variables d'environnement
+    \end{itemize}
+\end{bestpracticebox}
