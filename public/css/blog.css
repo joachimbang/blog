@@ -1,0 +1,53 @@
+.article-panel {
+    margin-bottom: 1.5rem;
+}
+
+.blog-content {
+    padding: 1.25rem;
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    line-height: 1.75;
+    color: #334155;
+}
+
+.blog-content p {
+    margin-bottom: 1rem;
+}
+
+.comments-panel {
+    padding-top: 0.5rem;
+}
+
+.comment-card {
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    background: #f8fafc;
+    margin-bottom: 1rem;
+}
+
+.comment-card .meta {
+    font-size: 0.9rem;
+    color: #475569;
+    margin-top: 0.65rem;
+}
+
+.comment-wrapper {
+    margin-top: 1rem;
+}
+
+.comment-hint {
+    display: none;
+    margin-top: 1rem;
+    color: #475569;
+    font-style: italic;
+}
+
+.comment-hint-visible {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}

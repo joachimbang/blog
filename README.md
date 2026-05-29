@@ -1,6 +1,9 @@
 # Blog Multi-Role — Backend et Frontend léger
 
+
 Ceci est le dépôt du projet "Blog Multi-Role" : une application web pédagogique composée d'un backend Node.js/Express avec PostgreSQL et d'un frontend statique (dossier `public/`). Le projet illustre :
+
+
 
 - Authentification avec JWT (access + refresh tokens)
 - Gestion de rôles (utilisateur / auteur / admin)
@@ -39,6 +42,7 @@ npm install
 
 3. Configurer la base de données PostgreSQL et initialiser le schema :
 
+
 ```bash
 createdb blog_db
 psql -d blog_db -f sql/schema.sql   # si le script existe
@@ -46,11 +50,14 @@ psql -d blog_db -f sql/schema.sql   # si le script existe
 
 4. Lancer en mode développement :
 
+
 ```bash
 npm run dev   # nodemon ou script de dev
 ```
 
+
 En production :
+
 
 ```bash
 npm ci
