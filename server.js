@@ -15,10 +15,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log('[SERVER] Working directory:', process.cwd());
+
 // Middlewares generaux
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Middleware pédagogique de logging : affiche chaque requête entrante
+app.use((req, res, next) => {
+    // On logge la méthode, l'URL et le corps de la requête (si présent)
+    console.log(`[REQ] ${new Date().toISOString()} - ${req.method} ${req.url} - body: ${JSON.stringify(req.body || {})}`);
+    // On trace également l'origine de la requête pour débogage CORS
+    console.log(`[REQ] Origin: ${req.headers.origin || 'n/a'}, User-Agent: ${req.headers['user-agent'] || 'n/a'}`);
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes API
