@@ -19,35 +19,25 @@ async function loadAuthorArticles() {
     const container = document.getElementById('authorArticles');
     if (!container) return;
 
-    const user = getUser();
-    if (!user) {
-        container.innerHTML = '<p>Vous devez être connecté pour accéder à cette page.</p>';
-        return;
-    }
-
-    if (user.role !== 'auteur' && user.role !== 'admin') {
-        showAlert('Accès refusé : vous n’êtes pas auteur.', 'error');
-        container.innerHTML = '<p>Vous devez être un auteur pour consulter cette page.</p>';
-        return;
-    }
-
     container.innerHTML = '<p>Chargement de vos articles...</p>';
 
-    const response = await apiRequest('/blogs/mine');
+    const response = await apiRequest('/blogs');
     if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        container.innerHTML = `<p>${data.error || 'Impossible de charger vos articles.'}</p>`;
+        container.innerHTML = '<p>Impossible de charger vos articles. Vérifiez que vous êtes connecté.</p>';
         return;
     }
 
     const data = await response.json();
-    if (!Array.isArray(data.blogs) || data.blogs.length === 0) {
+    const user = getUser();
+    const articles = data.blogs.filter((blog) => blog.auteur_email === user?.email);
+
+    if (articles.length === 0) {
         container.innerHTML = '<p>Aucun article publié pour le moment.</p>';
         return;
     }
 
     container.innerHTML = '';
-    data.blogs.forEach((blog) => {
+    articles.forEach((blog) => {
         container.appendChild(renderAuthorArticleCard(blog));
     });
 }
@@ -55,6 +45,7 @@ async function loadAuthorArticles() {
 async function handleAuthorActions(event) {
     const editBtn = event.target.closest('.edit-btn');
     const deleteBtn = event.target.closest('.delete-btn');
+
     if (!editBtn && !deleteBtn) return;
 
     const articleId = editBtn?.dataset.id || deleteBtn?.dataset.id;
@@ -68,8 +59,8 @@ async function handleAuthorActions(event) {
             method: 'DELETE'
         });
 
-        const data = await response.json().catch(() => ({}));
         if (!response.ok) {
+            const data = await response.json();
             showAlert(data.error || 'Erreur lors de la suppression.', 'error');
             return;
         }
