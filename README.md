@@ -105,8 +105,3 @@ Il n'y a pas de suite de tests automatisés incluse pour l'instant. Pour tester 
 3. Committez vos changements et poussez
 4. Ouvrez une Pull Request
 
-## License
-
-Projet pédagogique — pas de licence explicite fournie.
-
----
