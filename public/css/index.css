@@ -1,0 +1,108 @@
+.hero {
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    margin-bottom: 2rem;
+}
+
+.blog-list {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.blog-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    background: #ffffff;
+}
+
+.blog-card h3 {
+    margin-top: 0;
+}
+
+.blog-card .meta {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.blog-card button,
+.blog-card .read-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    padding: 0.65rem 1rem;
+    border: none;
+    border-radius: 0.75rem;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+.author-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.author-actions button {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+}
+
+.author-actions button.delete-btn {
+    background: #dc2626;
+}
+
+.author-actions button:hover {
+    opacity: 0.95;
+}
+.create-blog-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.comment-section {
+    margin-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+}
+
+.comment-card {
+    padding: 0.9rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    margin-bottom: 0.8rem;
+    background: #f8fafc;
+}
+
+.comment-card .meta {
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.comment-login-hint {
+    padding: 0.85rem 1rem;
+    border: 1px dashed #cbd5e1;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+    color: #475569;
+    margin-top: 0.75rem;
+}
+
+.comment-instructions {
+    color: #334155;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+}
+
+.comment-form textarea {
+    resize: vertical;
+}

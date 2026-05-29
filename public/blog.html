@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lire un article - Blog multi-role</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/blog.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">Blog Multi-Role</div>
+        <nav>
+            <button id="articlesBtn">Articles</button>
+            <button id="loginBtn">Connexion</button>
+            <button id="registerBtn">Inscription</button>
+            <button id="publishBtn">Publier</button>
+            <button id="authorBtn">Mes articles</button>
+            <button id="logoutBtn" class="hidden">Deconnexion</button>
+        </nav>
+    </header>
+
+    <main class="page-content">
+        <section class="panel article-panel">
+            <div id="articleHeader">
+                <h1 id="blogTitle">Chargement...</h1>
+                <p id="blogMeta" class="meta"></p>
+            </div>
+
+            <article id="blogContent" class="blog-content">
+                <p>Veuillez patienter pendant le chargement de l'article.</p>
+            </article>
+        </section>
+
+        <section id="alert" class="alert hidden"></section>
+
+        <section class="panel comments-panel">
+            <h2>Commentaires</h2>
+            <div id="commentsList"></div>
+            <div id="commentFormWrapper" class="comment-wrapper">
+                <form id="commentForm">
+                    <label for="commentaire">Votre commentaire</label>
+                    <textarea id="commentaire" name="commentaire" rows="4" required></textarea>
+                    <button type="submit">Publier</button>
+                </form>
+            </div>
+            <p id="commentHint" class="comment-hint"></p>
+        </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/blog.js"></script>
+</body>
+</html>

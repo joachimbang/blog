@@ -25,6 +25,25 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Recuperer les articles de l'auteur connecté
+router.get('/mine', authMiddleware, checkRole('auteur', 'admin'), async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const result = await db.query(`
+            SELECT b.*, u.nom, u.prenom, u.email as auteur_email
+            FROM blogs b
+            LEFT JOIN users u ON b.auteur_id = u.id
+            WHERE b.auteur_id = $1
+            ORDER BY b.date_creation DESC
+        `, [userId]);
+
+        res.json({ blogs: result.rows });
+    } catch (err) {
+        console.error('Erreur lors de la recuperation des articles de l auteur :', err);
+        res.status(500).json({ error: 'Erreur lors de la recuperation des articles' });
+    }
+});
+
 // Recuperer un blog par ID
 router.get('/:id', async (req, res) => {
     try {

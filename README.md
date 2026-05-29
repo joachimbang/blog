@@ -1,6 +1,6 @@
 # Backend du projet Blog Multi-Role
 
-Ce repository contient le backend Node.js/Express du projet de blog multi-role décrit dans le rapport.
+Ce repository contient le backend Node.js/Express du projet de blog multi-role decrit dans le rapport.
 
 ## Installation
 
@@ -10,7 +10,7 @@ Ce repository contient le backend Node.js/Express du projet de blog multi-role d
 cp .env.example .env
 ```
 
-2. Installer les dépendances :
+2. Installer les dependances :
 
 ```bash
 npm install
@@ -18,33 +18,33 @@ npm install
 
 ## Lancer le serveur
 
-Ce projet utilise les modules ES de Node.js (`type: "module"` dans `package.json`). Assurez-vous d'exécuter Node.js 18+.
+Ce projet utilise les modules ES de Node.js (`type: "module"` dans `package.json`). Assurez-vous d'executer Node.js 18+.
 
 ```bash
 node server.js
 ```
 
-Le serveur écoute par défaut sur le port `3000`.
+Le serveur ecoute par defaut sur le port `3000`.
 
 ## Routes principales
 
 - `POST /api/auth/register` : inscription d'un nouvel utilisateur
-- `POST /api/auth/login` : connexion et génération d'access token + refresh token
+- `POST /api/auth/login` : connexion et generation d'access token + refresh token
 - `POST /api/auth/token` : rafraîchissement de l'access token
-- `POST /api/auth/logout` : déconnexion (révocation du refresh token)
-- `GET /api/blogs` : récupération de tous les blogs
-- `GET /api/blogs/:id` : récupération d'un blog par ID
-- `POST /api/blogs` : création d'un blog (role `auteur` ou `admin` requis)
+- `POST /api/auth/logout` : deconnexion (revocation du refresh token)
+- `GET /api/blogs` : recuperation de tous les blogs
+- `GET /api/blogs/:id` : recuperation d'un blog par ID
+- `POST /api/blogs` : creation d'un blog (role `auteur` ou `admin` requis)
 - `PUT /api/blogs/:id` : modification d'un blog (auteur ou admin)
 - `DELETE /api/blogs/:id` : suppression d'un blog (auteur ou admin)
 
 ## Structure des fichiers
 
-- `server.js` : point d'entrée de l'application
+- `server.js` : point d'entree de l'application
 - `db.js` : configuration de la connexion PostgreSQL
-- `auth.js` : génération des JWT d'accès et de rafraîchissement
+- `auth.js` : generation des JWT d'accès et de rafraîchissement
 - `middleware/auth.js` : middleware de validation des access tokens
-- `middleware/roles.js` : middleware de vérification des rôles
+- `middleware/roles.js` : middleware de verification des rôles
 - `routes/auth.js` : routes d'authentification
 - `routes/blogs.js` : routes de gestion des blogs
 
@@ -57,7 +57,7 @@ Avant de mettre le backend en ligne, ajoutez un `.gitignore` pour exclure les fi
 - `.vscode/`
 - `rapport/`
 
-Commandes Git utilisées pour initialiser le projet :
+Commandes Git utilisees pour initialiser le projet :
 
 ```bash
 echo "# blog" >> README.md
@@ -69,7 +69,7 @@ git remote add origin https://github.com/joachimbang/blog.git
 git push -u origin main
 ```
 
-Ensuite, pour stocker le backend dans une branche séparée :
+Ensuite, pour stocker le backend dans une branche separee :
 
 ```bash
 git checkout -b backend
@@ -79,4 +79,4 @@ git commit -m "backend setup"
 
 ## Remarque
 
-Pour la démonstration, les refresh tokens sont stockés en mémoire dans `routes/auth.js`. En production, il faut les stocker dans une base de données ou un store sécurisé afin de pouvoir les révoquer correctement.
+Pour la demonstration, les refresh tokens sont stockes en memoire dans `routes/auth.js`. En production, il faut les stocker dans une base de donnees ou un store securise afin de pouvoir les revoquer correctement.

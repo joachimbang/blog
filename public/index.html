@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog multi-role</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">Blog Multi-Role</div>
+        <nav>
+            <button id="articlesBtn">Articles</button>
+            <button id="loginBtn">Connexion</button>
+            <button id="registerBtn">Inscription</button>
+            <button id="publishBtn">Publier</button>
+            <button id="authorBtn">Mes articles</button>
+            <button id="logoutBtn" class="hidden">Deconnexion</button>
+        </nav>
+    </header>
+
+    <main class="page-content">
+        <section class="panel">
+            <h1>Articles récents</h1>
+            <div id="alert" class="alert hidden"></div>
+            <div id="blogList" class="blog-list"></div>
+        </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

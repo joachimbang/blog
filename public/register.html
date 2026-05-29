@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Blog multi-role</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">Blog Multi-Role</div>
+        <nav>
+            <button id="articlesBtn">Articles</button>
+            <button id="loginBtn">Connexion</button>
+            <button id="registerBtn">Inscription</button>
+            <button id="publishBtn">Publier</button>
+            <button id="authorBtn">Mes articles</button>
+            <button id="logoutBtn" class="hidden">Deconnexion</button>
+        </nav>
+    </header>
+
+    <main class="page-content auth-page">
+        <section class="panel auth-panel">
+            <h1>Inscription</h1>
+            <form id="registerForm" method="post" action="">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" required>
+
+                <label for="prenom">Prénom</label>
+                <input type="text" id="prenom" name="prenom" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required>
+
+                <fieldset class="role-fieldset">
+                    <legend>Vous êtes :</legend>
+                    <label>
+                        <input type="radio" name="role" value="utilisateur" checked>
+                        Utilisateur / Visiteur
+                    </label>
+                    <label>
+                        <input type="radio" name="role" value="auteur">
+                        Auteur
+                    </label>
+                </fieldset>
+
+                <button type="submit">Créer un compte</button>
+            </form>
+
+            <p>Déjà inscrit ? <a href="login.html">Se connecter</a></p>
+            <p><a href="index.html">Retour au blog</a></p>
+            <div id="alert" class="alert hidden"></div>
+        </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/register.js"></script>
+</body>
+</html>
