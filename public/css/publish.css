@@ -1,0 +1,33 @@
+.publish-panel {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.publish-panel p {
+    margin-bottom: 1rem;
+    color: #475569;
+}
+
+.publish-notice {
+    display: none;
+    margin-top: 1rem;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.publish-notice-visible {
+    display: block;
+}
+
+.publish-notice.error {
+    color: #991b1b;
+}
+
+#publishForm input,
+#publishForm textarea {
+    width: 100%;
+}
+
+#publishForm button {
+    margin-top: 0.75rem;
+}
