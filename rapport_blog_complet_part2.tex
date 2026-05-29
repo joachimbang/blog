@@ -1,0 +1,1536 @@
+% ============================================================================
+% CHAPITRE 3 : INSTALLATION DES DÉPENDANCES
+% ============================================================================
+\chapter{Installation des Dépendances}
+
+\section{Introduction aux Dépendances}
+
+Les dépendances sont des bibliothèques externes que votre projet utilise pour fonctionner. Elles sont déclarées dans \texttt{package.json} et installées dans le dossier \texttt{node\_modules/}.
+
+\begin{definitionbox}
+    \textbf{Dépendance} : Bibliothèque ou module externe dont votre projet dépend pour fonctionner. Elle peut être une dépendance de production (nécessaire en production) ou de développement (nécessaire uniquement pendant le développement).
+\end{definitionbox}
+
+\section{Express - Framework Web}
+
+\begin{lstlisting}[style=bash, caption=Installation d'Express]
+npm install express
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Express.js} : Framework web minimal et flexible pour Node.js, fournissant un ensemble robuste de fonctionnalités pour les applications web et mobiles. Il simplifie la création de serveurs HTTP et la gestion des routes.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : Express est comme un "kit de construction" pour serveurs web. Au lieu de devoir construire chaque brique (gestion des routes, parsing du corps des requêtes, gestion des cookies) vous-même, Express vous fournit ces briques préfabriquées.
+\end{analogybox}
+
+\textbf{Pourquoi Express ?}
+\begin{itemize}
+    \item Simplifie la création de serveurs HTTP
+    \item Gère automatiquement le routing (les routes)
+    \item Parse automatiquement les requêtes JSON
+    \item Supporte les middlewares pour la modularité
+    \item Très populaire et bien documenté
+\end{itemize}
+
+\section{pg - Driver PostgreSQL}
+
+\begin{lstlisting}[style=bash, caption=Installation du driver pg]
+npm install pg
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{pg} : Driver PostgreSQL non-bloquant pour Node.js. Il permet d'exécuter des requêtes SQL depuis Node.js et de communiquer avec une base de données PostgreSQL.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : Le driver pg est comme un "traducteur" entre Node.js (qui parle JavaScript) et PostgreSQL (qui parle SQL). Il convertit les requêtes JavaScript en requêtes SQL que PostgreSQL peut comprendre.
+\end{analogybox}
+
+\textbf{Pourquoi pg et pas un ORM ?}
+\begin{itemize}
+    \item \textbf{Apprentissage} : Comprendre le SQL brut est essentiel pour un ingénieur backend
+    \item \textbf{Performance} : Les drivers sont généralement plus performants que les ORM
+    \item \textbf{Contrôle} : Vous avez un contrôle total sur les requêtes SQL
+    \text \textbf{Transparence} : Vous voyez exactement ce qui est envoyé à la base de données
+\end{itemize}
+
+\section{bcrypt - Hachage de Mots de Passe}
+
+\begin{lstlisting}[style=bash, caption=Installation de bcrypt]
+npm install bcrypt
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{bcrypt} : Bibliothèque de hachage de mots de passe conçue pour être lente et résistante aux attaques par force brute. Elle utilise un sel aléatoire pour chaque mot de passe.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : Le hachage est comme une "empreinte digitale" irréversible. Vous pouvez créer une empreinte à partir d'un doigt, mais vous ne pouvez pas recréer le doigt à partir de l'empreinte. Le sel est comme ajouter du "poivre" unique à chaque empreinte pour qu'elles soient toutes différentes même pour le même mot de passe.
+\end{analogybox}
+
+\textbf{Pourquoi bcrypt ?}
+\begin{itemize}
+    \item \textbf{Sécurité} : Conçu spécifiquement pour les mots de passe
+    \item \textbf{Sel automatique} : Génère un sel unique pour chaque mot de passe
+    \item \textbf{Lenteur} : Lent par design pour ralentir les attaques par force brute
+    \item \textbf{Standard} : Standard de l'industrie pour le hachage de mots de passe
+\end{itemize}
+
+\section{jsonwebtoken - Authentification JWT}
+
+\begin{lstlisting}[style=bash, caption=Installation de jsonwebtoken]
+npm install jsonwebtoken
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{JWT (JSON Web Token)} : Standard ouvert (RFC 7519) pour créer des tokens d'accès sécurisés. Un JWT est un token compact et autonome qui contient des informations (claims) et est signé cryptographiquement.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Badge} : Un JWT est comme un badge d'étudiant sécurisé. Il contient votre nom, votre rôle (étudiant/professeur), et une date d'expiration. Le badge est signé par l'université, donc impossible à falsifier. Vous le présentez pour accéder aux bâtiments, et le gardien vérifie la signature.
+\end{analogybox}
+
+\textbf{Pourquoi JWT ?}
+\begin{itemize}
+    \item \textbf{Stateless} : Le serveur n'a pas besoin de stocker les sessions
+    \item \textbf{Compact} : Peut être envoyé dans l'en-tête HTTP
+    \item \textbf{Sécurisé} : Signé cryptographiquement
+    \item \textbf{Standard} : Standard de l'industrie pour l'authentification moderne
+\end{itemize}
+
+\section{dotenv - Gestion des Variables d'Environnement}
+
+\begin{lstlisting}[style=bash, caption=Installation de dotenv]
+npm install dotenv
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{dotenv} : Module qui charge les variables d'environnement depuis un fichier \texttt{.env} dans \texttt{process.env}. Cela permet de séparer la configuration du code.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : Le fichier \texttt{.env} est comme un "fichier de configuration secret" qui contient toutes les informations sensibles (mots de passe, clés API) séparément du code. C'est comme avoir un coffre-fort séparé pour vos secrets.
+\end{analogybox}
+
+\textbf{Pourquoi dotenv ?}
+\begin{itemize}
+    \item \textbf{Sécurité} : Évite de hardcoder les secrets dans le code
+    \item \textbf{Flexibilité} : Facile de changer de configuration selon l'environnement (dev/prod)
+    \item \textbf{Standard} : Standard de l'industrie pour la gestion des secrets
+\end{itemize}
+
+\section{cors - Partage de Ressources Cross-Origin}
+
+\begin{lstlisting}[style=bash, caption=Installation de cors]
+npm install cors
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{CORS (Cross-Origin Resource Sharing)} : Mécanisme de sécurité basé sur des en-têtes HTTP qui permet à un serveur d'indiquer quelles origines (domaines) sont autorisées à accéder à ses ressources.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : CORS est comme un "système de contrôle d'accès" pour les requêtes web. Si votre site (example.com) veut accéder à une API sur (api.example.com), CORS vérifie que c'est autorisé. C'est comme un gardien qui vérifie les badges avant de laisser entrer.
+\end{analogybox}
+
+\textbf{Pourquoi cors ?}
+\begin{itemize}
+    \item \textbf{Sécurité} : Protège contre les requêtes malveillantes cross-origin
+    \item \textbf{Simplicité} : Simplifie la configuration CORS dans Express
+    \item \textbf{Nécessaire} : Obligatoire pour les applications frontend séparées
+\end{itemize}
+
+\section{nodemon - Redémarrage Automatique}
+
+\begin{lstlisting}[style=bash, caption=Installation de nodemon (dépendance de développement)]
+npm install --save-dev nodemon
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{nodemon} : Outil qui surveille les modifications de fichiers dans votre projet et redémarre automatiquement le serveur Node.js lors des changements. Indispensable pour le développement.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : nodemon est comme un "assistant vigilant" qui surveille votre travail. Dès que vous sauvegardez un fichier, il redémarre automatiquement le serveur pour que vous puissiez voir les changements immédiatement. Sans lui, vous devriez arrêter et redémarrer le serveur manuellement à chaque modification.
+\end{analogybox}
+
+\textbf{Pourquoi nodemon ?}
+\begin{itemize}
+    \item \textbf{Productivité} : Évite les redémarrages manuels fréquents
+    \item \textbf{Développement uniquement} : Pas nécessaire en production
+    \item \textbf{Standard} : Outil standard dans l'écosystème Node.js
+\end{itemize}
+
+\section{Configuration des Scripts}
+
+Modifiez la section \texttt{scripts} dans \texttt{package.json} :
+
+\begin{lstlisting}[style=javascript, caption=Configuration des scripts dans package.json]
+{
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  }
+}
+\end{lstlisting}
+
+\begin{bestpracticebox}
+    \textbf{Scripts Standard} :
+    \begin{itemize}
+        \item \textbf{npm start} : Commande pour démarrer en production
+        \item \textbf{npm run dev} : Commande pour le développement avec nodemon
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Erreur Courante : Module Non Trouvé}
+
+\begin{errorbox}
+    \textbf{Erreur : Cannot find module 'express'}
+    
+    \textbf{Cause} : La dépendance n'a pas été installée ou le dossier \texttt{node\_modules} est manquant.
+    
+    \textbf{Diagnostic} :
+    \begin{itemize}
+        \item Vérifiez que vous avez exécuté \texttt{npm install}
+        \item Vérifiez que le dossier \texttt{node\_modules} existe
+        \item Vérifiez que \texttt{package.json} contient la dépendance
+    \end{itemize}
+    
+    \textbf{Résolution} :
+    \begin{lstlisting}[style=bash]
+npm install
+    \end{lstlisting}
+    
+    \textbf{Explication} : La commande \texttt{npm install} lit \texttt{package.json} et installe toutes les dépendances listées dans le dossier \texttt{node\_modules}.
+\end{errorbox}
+
+\section{Le Dossier node\_modules}
+
+Le dossier \texttt{node\_modules} contient toutes les dépendances installées et leurs dépendances transitives.
+
+\begin{warningbox}
+    \textbf{Important} : Le dossier \texttt{node\_modules} ne doit \textbf{jamais} être commité dans Git. Il est trop volumineux et peut être régénéré avec \texttt{npm install}.
+\end{warningbox}
+
+\begin{lstlisting}[style=bash, caption=Contenu de .gitignore]
+node_modules/
+.env
+.DS_Store
+*.log
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Dépendances Transitives} : Les dépendances des dépendances. Par exemple, si Express dépend de 5 autres bibliothèques, ces 5 bibliothèques seront également installées dans \texttt{node\_modules}.
+\end{definitionbox}
+
+\section{package-lock.json}
+
+Le fichier \texttt{package-lock.json} est généré automatiquement par npm. Il verrouille les versions exactes de toutes les dépendances installées.
+
+\begin{definitionbox}
+    \textbf{package-lock.json} : Fichier qui enregistre la version exacte de chaque dépendance installée, y compris les dépendances transitives. Il assure que tous les développeurs installent exactement les mêmes versions.
+\end{definitionbox}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques} :
+    \begin{itemize}
+        \item Committez toujours \texttt{package-lock.json}
+        \item Ne modifiez jamais \texttt{package-lock.json} manuellement
+        \item Utilisez \texttt{npm ci} en production pour une installation reproductible
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 4 : CONFIGURATION DU SERVEUR EXPRESS
+% ============================================================================
+\chapter{Configuration du Serveur Express}
+
+\section{Introduction à Express}
+
+Express est un framework web minimal pour Node.js qui fournit des fonctionnalités robustes pour les applications web et mobiles. Il simplifie la création de serveurs HTTP et la gestion des routes.
+
+\begin{definitionbox}
+    \textbf{Framework Web} : Ensemble de bibliothèques et d'outils qui fournissent une structure standard pour développer des applications web. Un framework définit des conventions et fournit des fonctionnalités prêtes à l'emploi.
+\end{definitionbox}
+
+\section{Création du Fichier server.js}
+
+Créez le fichier \texttt{server.js} à la racine du projet. Ce sera le point d'entrée de votre application.
+
+\begin{lstlisting}[style=javascript, caption=server.js - Configuration complète du serveur Express]
+// Importation des dépendances
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
+
+// Importation des routes
+const authRoutes = require('./routes/auth');
+const blogRoutes = require('./routes/blogs');
+const commentaireRoutes = require('./routes/commentaires');
+
+// Importation de la configuration de la base de données
+const db = require('./db');
+
+// Initialisation de l'application Express
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// ============================================================================
+// MIDDLEWARES GLOBAUX
+// ============================================================================
+
+// Middleware CORS - Permet les requêtes cross-origin
+app.use(cors());
+
+// Middleware pour parser le JSON dans le corps des requêtes
+app.use(express.json());
+
+// Middleware pour parser les données URL-encoded
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware pour servir les fichiers statiques
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ============================================================================
+// MIDDLEWARE DE LOGGING
+// ============================================================================
+
+// Middleware pour logger chaque requête
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+});
+
+// ============================================================================
+// ROUTES
+// ============================================================================
+
+// Routes d'authentification
+app.use('/api/auth', authRoutes);
+
+// Routes des blogs
+app.use('/api/blogs', blogRoutes);
+
+// Routes des commentaires
+app.use('/api/commentaires', commentaireRoutes);
+
+// Route de test
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'Le serveur fonctionne correctement !' });
+});
+
+// ============================================================================
+// GESTION DES ERREURS 404
+// ============================================================================
+
+// Middleware pour les routes non trouvées
+app.use((req, res) => {
+    res.status(404).json({ error: 'Route non trouvée' });
+});
+
+// ============================================================================
+// GESTION DES ERREURS GLOBALES
+// ============================================================================
+
+// Middleware de gestion des erreurs
+app.use((err, req, res, next) => {
+    console.error('Erreur:', err.stack);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+});
+
+// ============================================================================
+// DÉMARRAGE DU SERVEUR
+// ============================================================================
+
+// Démarrage du serveur
+app.listen(PORT, () => {
+    console.log(`\n========================================`);
+    console.log(`Serveur démarré sur le port ${PORT}`);
+    console.log(`URL : http://localhost:${PORT}`);
+    console.log(`========================================\n`);
+});
+
+// Gestion de l'arrêt gracieux
+process.on('SIGINT', () => {
+    console.log('\nArrêt du serveur...');
+    db.end(() => {
+        console.log('Connexion à la base de données fermée');
+        process.exit(0);
+    });
+});
+\end{lstlisting}
+
+\section{Explication Détaillée du Code}
+
+\subsection{Importation des Dépendances}
+
+\begin{lstlisting}[style=javascript]
+const express = require('express');
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{require()} : Fonction Node.js pour importer des modules. Dans CommonJS (le système de modules de Node.js), \texttt{require} charge un module et retourne son export.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : \texttt{require} est comme "emprunter un livre" dans une bibliothèque. Vous demandez un livre (module) spécifique, et la bibliothèque vous le donne pour que vous puissiez l'utiliser.
+\end{analogybox}
+
+\subsection{Initialisation de l'Application}
+
+\begin{lstlisting}[style=javascript]
+const app = express();
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{express()} : Fonction qui crée une application Express. Cette application est un objet qui représente votre serveur web et possède des méthodes pour configurer les routes, les middlewares, etc.
+\end{definitionbox}
+
+\subsection{Les Middlewares}
+
+\begin{lstlisting}[style=javascript]
+app.use(express.json());
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Middleware} : Fonction qui a accès à l'objet requête (req), l'objet réponse (res), et la fonction middleware suivante (next) dans le cycle requête-réponse de l'application.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Concierge} : Un middleware est comme un concierge dans un immeuble. Quand quelqu'un arrive (requête), le concierge vérifie son identité, enregistre son passage, puis lui ouvre la porte (next) pour qu'il puisse continuer vers sa destination.
+\end{analogybox}
+
+\subsection{express.json()}
+
+\begin{lstlisting}[style=javascript]
+app.use(express.json());
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{express.json()} : Middleware qui parse le corps des requêtes HTTP en JSON. Il convertit automatiquement les données JSON envoyées par le client en objet JavaScript accessible via \texttt{req.body}.
+\end{definitionbox}
+
+\textbf{Pourquoi est-ce nécessaire ?}
+Sans ce middleware, \texttt{req.body} serait \texttt{undefined} et vous ne pourriez pas accéder aux données envoyées par le client.
+
+\subsection{express.static()}
+
+\begin{lstlisting}[style=javascript]
+app.use(express.static(path.join(__dirname, 'public')));
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{express.static()} : Middleware qui sert des fichiers statiques (HTML, CSS, JavaScript, images). Il rend les fichiers du dossier spécifié accessibles via HTTP.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : \texttt{express.static} est comme un "distributeur automatique" de fichiers. Quand un client demande un fichier (ex: \texttt{/style.css}), le middleware trouve le fichier correspondant dans le dossier \texttt{public} et l'envoie au client.
+\end{analogybox}
+
+\subsection{Définition des Routes}
+
+\begin{lstlisting}[style=javascript]
+app.use('/api/auth', authRoutes);
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Route} : Chemin URL qui correspond à une fonction de gestionnaire spécifique. Quand une requête correspond au chemin et à la méthode HTTP, le gestionnaire associé est exécuté.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : Une route est comme une "adresse" dans un système de routage postal. Quand vous envoyez une lettre à une adresse spécifique, le système de routage sait exactement où la livrer.
+\end{analogybox}
+
+\subsection{Gestion des Erreurs}
+
+\begin{lstlisting}[style=javascript]
+app.use((err, req, res, next) => {
+    console.error('Erreur:', err.stack);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+});
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Middleware d'Erreur} : Middleware spécial avec quatre arguments (err, req, res, next). Express le reconnaît automatiquement comme middleware de gestion d'erreurs.
+\end{definitionbox}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques de Gestion d'Erreurs} :
+    \begin{itemize}
+        \item Toujours logger les erreurs côté serveur
+        \item Ne jamais exposer les détails de l'erreur au client en production
+        \item Utiliser des codes HTTP appropriés (400, 401, 403, 404, 500)
+        \item Fournir des messages d'erreur clairs mais non techniques
+    \end{itemize}
+\end{bestpracticebox}
+
+\subsection{Démarrage du Serveur}
+
+\begin{lstlisting}[style=javascript]
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+});
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{app.listen()} : Méthode qui lie et écoute les connexions sur le port spécifié. Le serveur commence à accepter les requêtes HTTP sur ce port.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : \texttt{app.listen()} est comme "ouvrir un bureau" et afficher un numéro de téléphone. Une fois ouvert, les clients peuvent appeler (faire des requêtes) à ce numéro (port).
+\end{analogybox}
+
+\section{Cycle de Vie d'une Requête}
+
+Voici le cycle complet d'une requête HTTP dans Express :
+
+\begin{enumerate}
+    \item Le client envoie une requête HTTP au serveur
+    \item Express reçoit la requête
+    \item Les middlewares globaux s'exécutent dans l'ordre (CORS, JSON parsing, logging)
+    \item Express trouve la route correspondante
+    \item Les middlewares spécifiques à la route s'exécutent
+    \item Le gestionnaire de route s'exécute
+    \item La réponse est envoyée au client
+    \item Les middlewares d'erreur s'exécutent si une erreur survient
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, auto, thick]
+    \tikzstyle{block} = [rectangle, draw, fill=deepblue!20, text width=2.5cm, text centered, rounded corners, minimum height=1cm]
+    \tikzstyle{arrow} = [->, >=stealth, thick]
+    
+    \node[block] (client) {Client};
+    \node[block, right=1cm of client] (middleware1) {Middleware 1};
+    \node[block, right=1cm of middleware1] (middleware2) {Middleware 2};
+    \node[block, right=1cm of middleware2] (route) {Route};
+    \node[block, right=1cm of route] (response) {Réponse};
+    
+    \draw[arrow] (client) -- (middleware1);
+    \draw[arrow] (middleware1) -- (middleware2);
+    \draw[arrow] (middleware2) -- (route);
+    \draw[arrow] (route) -- (response);
+    \draw[arrow] (response) -- node[below] {HTTP} (client);
+\end{tikzpicture}
+\end{center}
+
+\begin{architecturebox}
+    \textbf{Chaîne de Middlewares} : Les middlewares s'exécutent séquentiellement dans l'ordre où ils sont définis. Chaque middleware peut soit terminer le cycle (envoyer une réponse), soit passer le contrôle au middleware suivant avec \texttt{next()}.
+\end{architecturebox}
+
+\section{Ports HTTP}
+
+\begin{definitionbox}
+    \textbf{Port} : Numérique identifiant un processus spécifique sur un ordinateur. Les ports permettent à plusieurs applications de communiquer simultanément sur le même ordinateur.
+\end{definitionbox}
+
+\textbf{Ports Courants} :
+\begin{itemize}
+    \item \textbf{80} : HTTP (non sécurisé)
+    \item \textbf{443} : HTTPS (sécurisé)
+    \item \textbf{3000} : Port de développement courant pour Node.js
+    \item \textbf{5000} : Port de développement alternatif
+    \item \textbf{8080} : Port de développement alternatif
+\end{itemize}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques} :
+    \begin{itemize}
+        \item Utiliser des ports supérieurs à 1024 pour le développement (ports < 1024 nécessitent des privilèges administrateur)
+        \item Utiliser des variables d'environnement pour le port
+        \item Ne jamais hardcoder le port en production
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 5 : BASE DE DONNÉES POSTGRESQL
+% ============================================================================
+\chapter{Base de Données PostgreSQL}
+
+\section{Introduction aux Bases de Données Relationnelles}
+
+\begin{definitionbox}
+    \textbf{Base de Données Relationnelle} : Système de gestion de base de données (SGBD) qui organise les données en tables avec des relations entre elles. Les données sont structurées selon le modèle relationnel inventé par E.F. Codd en 1970.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Classeur} : Une base de données relationnelle est comme un classeur géant avec des feuilles (tables). Chaque feuille a des colonnes (champs) et des lignes (enregistrements). Les feuilles sont reliées entre elles par des références croisées (clés étrangères).
+\end{analogybox}
+
+\section{Concepts Fondamentaux}
+
+\subsection{Tables}
+
+\begin{definitionbox}
+    \textbf{Table} : Structure qui organise les données en lignes et colonnes. Chaque table représente une entité (ex: utilisateurs, articles, commentaires).
+\end{definitionbox}
+
+\subsection{Lignes (Rows)}
+
+\begin{definitionbox}
+    \textbf{Ligne (Row)} : Enregistrement individuel dans une table. Chaque ligne représente une instance d'une entité (ex: un utilisateur spécifique, un article spécifique).
+\end{definitionbox}
+
+\subsection{Colonnes (Columns)}
+
+\begin{definitionbox}
+    \textbf{Colonne (Column)} : Champ qui contient un type de données spécifique pour chaque ligne (ex: nom, email, date de création).
+\end{definitionbox}
+
+\subsection{Contraintes}
+
+\begin{definitionbox}
+    \textbf{Contrainte} : Règle appliquée à une colonne ou une table pour garantir l'intégrité des données (ex: NOT NULL, UNIQUE, CHECK).
+\end{definitionbox}
+
+\subsection{Clés Primaires}
+
+\begin{definitionbox}
+    \textbf{Clé Primaire (Primary Key)} : Colonne (ou ensemble de colonnes) qui identifie de manière unique chaque ligne d'une table. Chaque table doit avoir exactement une clé primaire.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Numéro de Sécurité Sociale} : La clé primaire est comme le numéro de sécurité sociale. Chaque personne a un numéro unique qui l'identifie. Il n'y a pas deux personnes avec le même numéro.
+\end{analogybox}
+
+\subsection{Clés Étrangères}
+
+\begin{definitionbox}
+    \textbf{Clé Étrangère (Foreign Key)} : Colonne qui fait référence à la clé primaire d'une autre table. Elle établit une relation entre deux tables.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie de la Référence} : Une clé étrangère est comme une "référence" dans une lettre. Si vous écrivez une lettre à quelqu'un et mentionnez "Voir le dossier \#123", le \#123 est une référence à un autre dossier.
+\end{analogybox}
+
+\section{Pourquoi PostgreSQL ?}
+
+PostgreSQL est un système de gestion de base de données relationnelle objet, open-source et extrêmement robuste.
+
+\begin{itemize}
+    \item \textbf{Open Source} : Gratuit et communautaire
+    \item \textbf{Robuste} : Très fiable et stable
+    \item \textbf{Conforme aux Standards} : Respecte les standards SQL
+    \item \textbf{Extensible} : Supporte les extensions et les types personnalisés
+    \item \textbf{Performant} : Excellent pour les applications complexes
+    \item \textbf{Sécurisé} : Supporte l'authentification, le chiffrement, les rôles
+\end{itemize}
+
+\section{Débat : SERIAL vs UUID}
+
+\subsection{SERIAL}
+
+\begin{definitionbox}
+    \textbf{SERIAL} : Type de données PostgreSQL qui génère automatiquement des entiers séquentiels (1, 2, 3, ...). C'est l'équivalent de AUTO\_INCREMENT dans MySQL.
+\end{definitionbox}
+
+\textbf{Avantages de SERIAL} :
+\begin{itemize}
+    \item Simple à utiliser
+    \item Compact (4 octets)
+    \item Naturellement ordonné
+    \item Facile à déboguer
+\end{itemize}
+
+\textbf{Inconvénients de SERIAL} :
+\begin{itemize}
+    \item \textbf{Prévisible} : Les attaquants peuvent deviner les IDs
+    \item \textbf{Énumérable} : Possible de parcourir toutes les ressources
+    \item \textbf{Problème d'évolutivité} : Dans les systèmes distribués, difficile de garantir l'unicité
+    \item \textbf{Fuite d'information} : Le nombre d'utilisateurs est visible
+\end{itemize}
+
+\subsection{UUID}
+
+\begin{definitionbox}
+    \textbf{UUID (Universally Unique Identifier)} : Identifiant unique de 128 bits, généralement représenté par 36 caractères hexadécimaux (ex: 550e8400-e29b-41d4-a716-446655440000).
+\end{definitionbox}
+
+\textbf{Avantages de UUID} :
+\begin{itemize}
+    \item \textbf{Imprévisible} : Impossible de deviner les IDs
+    \item \textbf{Unique globalement} : Garantie d'unicité même dans les systèmes distribués
+    \item \textbf{Sécurisé} : Ne révèle pas le nombre d'enregistrements
+    \item \textbf{URL-safe} : Peut être utilisé directement dans les URLs
+    \item \textbf{Pas de collision} : Probabilité de collision négligeable
+\end{itemize}
+
+\textbf{Inconvénients de UUID} :
+\begin{itemize}
+    \item Plus volumineux (16 octets vs 4 octets)
+    \item Non ordonné (peut fragmenter les index)
+    \item Moins lisible pour les humains
+\end{itemize}
+
+\begin{securitybox}
+    \textbf{Recommandation de Sécurité} :
+    Pour ce projet pédagogique, nous utilisons UUID pour les raisons suivantes :
+    \begin{itemize}
+        \item \textbf{Sécurité} : Empêche l'énumération des ressources
+        \item \textbf{Pédagogique} : Montre les meilleures pratiques de sécurité
+        \item \textbf{Moderne} : Approche recommandée pour les nouvelles applications
+    \end{itemize}
+\end{securitybox}
+
+\section{Génération de UUID dans PostgreSQL}
+
+PostgreSQL fournit l'extension \texttt{pgcrypto} pour générer des UUID cryptographiquement sécurisés.
+
+\begin{lstlisting}[style=sql, caption=Activation de l'extension pgcrypto]
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{pgcrypto} : Extension PostgreSQL qui fournit des fonctions cryptographiques, y compris la génération de UUID aléatoires avec \texttt{gen\_random\_uuid()}.
+\end{definitionbox}
+
+\begin{lstlisting}[style=sql, caption=Génération d'un UUID]
+SELECT gen_random_uuid();
+-- Résultat : 550e8400-e29b-41d4-a716-446655440000
+\end{lstlisting}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques UUID} :
+    \begin{itemize}
+        \item Utiliser \texttt{gen\_random\_uuid()} plutôt que \texttt{uuid\_generate\_v4()} (plus cryptographiquement sécurisé)
+        \item Stocker les UUID dans des colonnes de type \texttt{UUID}
+        \item Ne pas générer les UUID dans l'application (génération côté base de données)
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 6 : MODÉLISATION RELATIONNELLE
+% ============================================================================
+\chapter{Modélisation Relationnelle}
+
+\section{Introduction à la Modélisation}
+
+La modélisation relationnelle est le processus de conception de la structure d'une base de données relationnelle. Elle définit les tables, les colonnes, les contraintes et les relations entre les tables.
+
+\begin{definitionbox}
+    \textbf{Modélisation Relationnelle} : Processus de conception qui transforme les exigences du monde réel en une structure de base de données relationnelle, en identifiant les entités, leurs attributs et leurs relations.
+\end{definitionbox}
+
+\section{Entités du Projet Blog}
+
+Notre blog multi-rôle comporte les entités suivantes :
+
+\begin{itemize}
+    \item \textbf{Utilisateurs} : Personnes qui s'inscrivent et se connectent
+    \item \textbf{Blogs} : Articles publiés par les utilisateurs
+    \item \textbf{Commentaires} : Réponses aux blogs
+    \item \textbf{Tags} : Catégories ou étiquettes pour les blogs
+\end{itemize}
+
+\section{Types de Relations}
+
+\subsection{Relation Un-à-Plusieurs (One-to-Many)}
+
+\begin{definitionbox}
+    \textbf{Relation One-to-Many} : Relation où un enregistrement d'une table peut être associé à plusieurs enregistrements d'une autre table, mais un enregistrement de la deuxième table n'est associé qu'à un seul enregistrement de la première.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie Parent-Enfant} : Un parent peut avoir plusieurs enfants, mais chaque enfant n'a qu'un seul parent biologique.
+\end{analogybox}
+
+\textbf{Exemples dans notre projet} :
+\begin{itemize}
+    \item Un utilisateur peut écrire plusieurs blogs (relation Users → Blogs)
+    \item Un blog peut avoir plusieurs commentaires (relation Blogs → Commentaires)
+    \item Un utilisateur peut écrire plusieurs commentaires (relation Users → Commentaires)
+\end{itemize}
+
+\subsection{Relation Plusieurs-à-Plusieurs (Many-to-Many)}
+
+\begin{definitionbox}
+    \textbf{Relation Many-to-Many} : Relation où plusieurs enregistrements d'une table peuvent être associés à plusieurs enregistrements d'une autre table. Cette relation nécessite une table de jonction (table associative).
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie Réseau Social} : Dans un réseau social, une personne peut avoir plusieurs amis, et chaque ami peut avoir plusieurs amis. C'est une relation many-to-many.
+\end{analogybox}
+
+\textbf{Exemple dans notre projet} :
+\begin{itemize}
+    \item Un blog peut avoir plusieurs tags
+    \item Un tag peut être associé à plusieurs blogs
+\end{itemize}
+
+Cette relation nécessite une table de jonction \texttt{blog\_tags}.
+
+\section{Intégrité Référentielle}
+
+\begin{definitionbox}
+    \textbf{Intégrité Référentielle} : Règle qui garantit que les relations entre les tables restent cohérentes. Elle empêche la création d'enregistrements "orphelins" qui référencent des enregistrements inexistants.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie des Références} : Si vous avez une lettre qui référence un dossier \#123, l'intégrité référentielle garantit que le dossier \#123 existe vraiment. Si le dossier est supprimé, la lettre devient une "lettre orpheline".
+\end{analogybox}
+
+\section{Schéma Complet de la Base de Données}
+
+Voici le schéma SQL complet de notre base de données :
+
+\begin{lstlisting}[style=sql, caption=schema.sql - Schéma complet de la base de données]
+-- Activation de l'extension pour les UUID
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- ============================================================================
+-- TABLE USERS (Utilisateurs)
+-- ============================================================================
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    role VARCHAR(50) DEFAULT 'utilisateur' CHECK (role IN ('utilisateur', 'auteur', 'admin')),
+    date_creation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    date_modification TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- TABLE BLOGS (Articles)
+-- ============================================================================
+
+CREATE TABLE blogs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    titre VARCHAR(255) NOT NULL,
+    contenu TEXT NOT NULL,
+    auteur_id UUID NOT NULL,
+    date_creation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    date_modification TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_auteur 
+        FOREIGN KEY (auteur_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- TABLE COMMENTAIRES (Commentaires)
+-- ============================================================================
+
+CREATE TABLE commentaires (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    contenu TEXT NOT NULL,
+    auteur_id UUID NOT NULL,
+    blog_id UUID NOT NULL,
+    date_creation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_auteur_commentaire 
+        FOREIGN KEY (auteur_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    CONSTRAINT fk_blog 
+        FOREIGN KEY (blog_id) 
+        REFERENCES blogs(id) 
+        ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- TABLE TAGS (Étiquettes)
+-- ============================================================================
+
+CREATE TABLE tags (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nom VARCHAR(100) UNIQUE NOT NULL,
+    date_creation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- TABLE BLOG_TAGS (Relation Many-to-Many)
+-- ============================================================================
+
+CREATE TABLE blog_tags (
+    blog_id UUID NOT NULL,
+    tag_id UUID NOT NULL,
+    date_creation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (blog_id, tag_id),
+    CONSTRAINT fk_blog_tag 
+        FOREIGN KEY (blog_id) 
+        REFERENCES blogs(id) 
+        ON DELETE CASCADE,
+    CONSTRAINT fk_tag_blog 
+        FOREIGN KEY (tag_id) 
+        REFERENCES tags(id) 
+        ON DELETE CASCADE
+);
+\end{lstlisting}
+
+\section{Diagramme Entité-Association (ERD)}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, auto, thick]
+    \tikzstyle{table} = [rectangle, draw, fill=deepblue!10, text width=2.5cm, text centered, rounded corners, minimum height=1cm]
+    \tikzstyle{relation} = [diamond, draw, fill=green!10, aspect=2, text width=1.5cm, text centered]
+    \tikzstyle{arrow} = [->, >=stealth, thick]
+    
+    \node[table] (users) {USERS};
+    \node[table, right=3cm of users] (blogs) {BLOGS};
+    \node[table, below=2cm of blogs] (commentaires) {COMMENTAIRES};
+    \node[table, right=3cm of blogs] (tags) {TAGS};
+    \node[relation, above=1cm of blogs] (blog_tags) {BLOG\_TAGS};
+    
+    \draw[arrow] (users) -- node[above] {1:N} (blogs);
+    \draw[arrow] (users) -- node[right] {1:N} (commentaires);
+    \draw[arrow] (blogs) -- node[right] {1:N} (commentaires);
+    \draw[arrow] (blogs) -- node[above] {N:M} (blog_tags);
+    \draw[arrow] (tags) -- node[above] {N:M} (blog_tags);
+\end{tikzpicture}
+\end{center}
+
+\section{Explication des Contraintes}
+
+\subsection{NOT NULL}
+
+\begin{definitionbox}
+    \textbf{NOT NULL} : Contrainte qui garantit qu'une colonne ne peut pas contenir de valeur NULL. La colonne doit obligatoirement avoir une valeur.
+\end{definitionbox}
+
+\subsection{UNIQUE}
+
+\begin{definitionbox}
+    \textbf{UNIQUE} : Contrainte qui garantit que toutes les valeurs dans une colonne sont différentes. Deux lignes ne peuvent pas avoir la même valeur dans cette colonne.
+\end{definitionbox}
+
+\subsection{CHECK}
+
+\begin{definitionbox}
+    \textbf{CHECK} : Contrainte qui définit une condition booléenne que chaque valeur doit satisfaire. Si la condition est fausse, la valeur est rejetée.
+\end{definitionbox}
+
+\begin{lstlisting}[style=sql]
+CHECK (role IN ('utilisateur', 'auteur', 'admin'))
+\end{lstlisting}
+
+Cette contrainte garantit que le rôle ne peut être que l'une de ces trois valeurs.
+
+\subsection{DEFAULT}
+
+\begin{definitionbox}
+    \textbf{DEFAULT} : Valeur par défaut assignée à une colonne si aucune valeur n'est spécifiée lors de l'insertion.
+\end{definitionbox}
+
+\begin{lstlisting}[style=sql]
+date_creation TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+\end{lstlisting}
+
+Cette colonne reçoit automatiquement la date et heure actuelle si aucune valeur n'est fournie.
+
+\section{Comportement ON DELETE}
+
+\subsection{CASCADE}
+
+\begin{definitionbox}
+    \textbf{ON DELETE CASCADE} : Quand un enregistrement référencé est supprimé, tous les enregistrements qui le référencent sont également supprimés automatiquement.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie} : Si vous supprimez un dossier principal, tous les sous-dossiers et fichiers à l'intérieur sont également supprimés automatiquement.
+\end{analogybox}
+
+\subsection{RESTRICT}
+
+\begin{definitionbox}
+    \textbf{ON DELETE RESTRICT} : Empêche la suppression d'un enregistrement s'il est référencé par d'autres enregistrements. La suppression est rejetée.
+\end{definitionbox}
+
+\subsection{SET NULL}
+
+\begin{definitionbox}
+    \textbf{ON DELETE SET NULL} : Quand un enregistrement référencé est supprimé, les colonnes de clé étrangère des enregistrements qui le référencent sont mises à NULL.
+\end{definitionbox}
+
+\begin{bestpracticebox}
+    \textbf{Choix du Comportement} :
+    \begin{itemize}
+        \item \textbf{CASCADE} : Quand les enregistrements dépendants n'ont pas de sens sans l'enregistrement parent (ex: commentaires sans article)
+        \item \textbf{RESTRICT} : Quand la suppression pourrait causer des incohérences (ex: commandes sans client)
+        \item \textbf{SET NULL} : Quand la relation est optionnelle (rarement utilisé)
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 7 : CONNEXION NODE.JS ↔ POSTGRESQL
+% ============================================================================
+\chapter{Connexion Node.js ↔ PostgreSQL}
+
+\section{Introduction au Driver pg}
+
+Le driver \texttt{pg} est le driver PostgreSQL officiel pour Node.js. Il permet d'exécuter des requêtes SQL depuis Node.js et de gérer les connexions à la base de données.
+
+\begin{definitionbox}
+    \textbf{Driver de Base de Données} : Bibliothèque qui permet à une application de communiquer avec un système de base de données spécifique. Le driver traduit les appels de l'application en protocole de communication de la base de données.
+\end{definitionbox}
+
+\section{Fichier de Configuration db.js}
+
+Créez le fichier \texttt{db.js} à la racine du projet :
+
+\begin{lstlisting}[style=javascript, caption=db.js - Configuration de la connexion PostgreSQL]
+const { Pool } = require('pg');
+require('dotenv').config();
+
+// ============================================================================
+// CONFIGURATION DU POOL DE CONNEXIONS
+// ============================================================================
+
+const pool = new Pool({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT || 5432,
+    // Configuration du pool
+    max: 20,                    // Nombre maximum de clients dans le pool
+    min: 2,                     // Nombre minimum de clients dans le pool
+    idleTimeoutMillis: 30000,   // Temps d'inactivité avant fermeture d'un client
+    connectionTimeoutMillis: 2000, // Timeout de connexion
+});
+
+// ============================================================================
+// TEST DE CONNEXION
+// ============================================================================
+
+pool.on('connect', () => {
+    console.log('Nouvelle connexion établie avec PostgreSQL');
+});
+
+pool.on('error', (err) => {
+    console.error('Erreur inattendue sur le client idle', err);
+    process.exit(-1);
+});
+
+// ============================================================================
+// FONCTION DE TEST DE CONNEXION
+// ============================================================================
+
+const testConnection = async () => {
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT NOW()');
+        console.log('Connexion réussie à PostgreSQL :', result.rows[0]);
+        client.release();
+    } catch (err) {
+        console.error('Erreur de connexion à PostgreSQL :', err);
+        throw err;
+    }
+};
+
+// Test de connexion au démarrage
+testConnection();
+
+// ============================================================================
+// EXPORT DU POOL
+// ============================================================================
+
+module.exports = pool;
+\end{lstlisting}
+
+\section{Explication du Code}
+
+\subsection{Pool de Connexions}
+
+\begin{lstlisting}[style=javascript]
+const { Pool } = require('pg');
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Pool de Connexions} : Ensemble de connexions à la base de données réutilisables. Au lieu de créer une nouvelle connexion pour chaque requête, le pool réutilise les connexions existantes, ce qui améliore les performances.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie de la Piscine} : Un pool de connexions est comme une piscine de taxis. Au lieu d'appeler un nouveau taxi à chaque fois, vous réutilisez les taxis disponibles dans la piscine. C'est plus efficace que d'appeler un nouveau taxi à chaque trajet.
+\end{analogybox}
+
+\textbf{Avantages du Pool} :
+\begin{itemize}
+    \item \textbf{Performance} : Réutilise les connexions existantes
+    \item \textbf{Scalabilité} : Gère automatiquement le nombre de connexions
+    \item \textbf{Fiabilité} : Gère les connexions défaillantes
+    \item \textbf{Efficacité} : Évite le surcoût de création de connexions
+\end{itemize}
+
+\subsection{Configuration du Pool}
+
+\begin{lstlisting}[style=javascript]
+max: 20,                    // Nombre maximum de connexions simultanées
+min: 2,                     // Nombre minimum de connexions maintenues
+idleTimeoutMillis: 30000,   // Temps avant fermeture d'une connexion inactive
+connectionTimeoutMillis: 2000, // Temps maximum pour établir une connexion
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Configuration du Pool} :
+    \begin{itemize}
+        \item \textbf{max} : Nombre maximum de connexions simultanées
+        \item \textbf{min} : Nombre minimum de connexions maintenues
+        \item \textbf{idleTimeoutMillis} : Temps avant fermeture d'une connexion inactive
+        \item \textbf{connectionTimeoutMillis} : Temps maximum pour établir une connexion
+    \end{itemize}
+\end{definitionbox}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques de Pool} :
+    \begin{itemize}
+        \item max ne doit pas dépasser la limite de connexions de PostgreSQL (default: 100)
+        \item min doit être au moins 1 pour éviter la latence de première connexion
+        \item idleTimeoutMillis doit être adapté à votre trafic
+        \item Toujours utiliser un pool en production
+    \end{itemize}
+\end{bestpracticebox}
+
+\subsection{Variables d'Environnement}
+
+Créez le fichier \texttt{.env} à la racine du projet :
+
+\begin{lstlisting}[style=bash, caption=.env - Variables d'environnement]
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=blog_db
+DB_PASSWORD=votre_mot_de_passe
+DB_PORT=5432
+PORT=3000
+JWT_SECRET=votre_cle_secrete_tres_longue_et_aleatoire
+\end{lstlisting}
+
+\begin{warningbox}
+    \textbf{Sécurité Critique} :
+    \begin{itemize}
+        \item Le fichier \texttt{.env} ne doit \textbf{jamais} être commité dans Git
+        \item Ajoutez \texttt{.env} dans votre \texttt{.gitignore}
+        \item Utilisez des mots de passe forts et des clés secrètes longues
+        \item Changez les valeurs par défaut en production
+    \end{itemize}
+\end{warningbox}
+
+\section{Exécution de Requêtes SQL}
+
+\subsection{Requête Simple}
+
+\begin{lstlisting}[style=javascript, caption=Exécution d'une requête simple]
+const db = require('./db');
+
+async function getAllUsers() {
+    try {
+        const result = await db.query('SELECT * FROM users');
+        return result.rows;
+    } catch (err) {
+        console.error('Erreur:', err);
+        throw err;
+    }
+}
+\end{lstlisting}
+
+\subsection{Requête avec Paramètres}
+
+\begin{lstlisting}[style=javascript, caption=Requête avec paramètres (recommandé)]
+async function getUserByEmail(email) {
+    try {
+        const result = await db.query(
+            'SELECT * FROM users WHERE email = $1',
+            [email]
+        );
+        return result.rows[0];
+    } catch (err) {
+        console.error('Erreur:', err);
+        throw err;
+    }
+}
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{Paramètres Positionnels (\$1, \$2, ...)} : Placeholders dans les requêtes SQL qui sont remplacés par les valeurs fournies dans un tableau. Cela prévient les injections SQL.
+\end{definitionbox}
+
+\section{Erreurs Courantes}
+
+\subsection{ECONNREFUSED}
+
+\begin{errorbox}
+    \textbf{Erreur : connection refused at TCPConnectWrap.afterConnect}
+    
+    \textbf{Cause} : PostgreSQL n'est pas démarré ou n'écoute pas sur le port spécifié.
+    
+    \textbf{Diagnostic} :
+    \begin{itemize}
+        \item Vérifiez que PostgreSQL est installé
+        \item Vérifiez que le service PostgreSQL est démarré
+        \item Vérifiez le port dans \texttt{.env}
+    \end{itemize}
+    
+    \textbf{Résolution} :
+    \begin{lstlisting}[style=bash]
+# Sous Linux/Mac
+sudo service postgresql start
+
+# Sous Windows
+# Démarrer le service PostgreSQL via le gestionnaire de services
+    \end{lstlisting}
+\end{errorbox}
+
+\subsection{Password Authentication Failed}
+
+\begin{errorbox}
+    \textbf{Erreur : password authentication failed for user "postgres"}
+    
+    \textbf{Cause} : Le mot de passe dans \texttt{.env} est incorrect.
+    
+    \textbf{Résolution} :
+    \begin{lstlisting}[style=bash]
+# Changer le mot de passe PostgreSQL
+sudo -u postgres psql
+ALTER USER postgres WITH PASSWORD 'nouveau_mot_de_passe';
+\q
+    \end{lstlisting}
+\end{errorbox}
+
+\section{Création de la Base de Données}
+
+\begin{lstlisting}[style=bash, caption=Création de la base de données PostgreSQL]
+# Connexion à PostgreSQL
+sudo -u postgres psql
+
+# Création de la base de données
+CREATE DATABASE blog_db;
+
+# Sortie
+\q
+\end{lstlisting}
+
+\section{Exécution du Script SQL}
+
+\begin{lstlisting}[style=bash, caption=Exécution du script schema.sql]
+psql -U postgres -d blog_db -f sql/schema.sql
+\end{lstlisting}
+
+\begin{bestpracticebox}
+    \textbf{Bonnes Pratiques de Base de Données} :
+    \begin{itemize}
+        \item Toujours utiliser des variables d'environnement pour les credentials
+        \item Utiliser des paramètres dans les requêtes (jamais de concaténation)
+        \item Gérer les erreurs de connexion gracieusement
+        \item Utiliser un pool de connexions en production
+        \item Ne jamais exposer les erreurs SQL détaillées au client
+    \end{itemize}
+\end{bestpracticebox}
+
+% ============================================================================
+% CHAPITRE 8 : SÉCURITÉ DES MOTS DE PASSE - BCRYPT
+% ============================================================================
+\chapter{Sécurité des Mots de Passe — Bcrypt}
+
+\section{Introduction à la Sécurité des Mots de Passe}
+
+La sécurité des mots de passe est l'un des aspects les plus critiques de la sécurité des applications. Une faille dans ce domaine peut avoir des conséquences catastrophiques.
+
+\begin{securitybox}
+    \textbf{Statistiques Effrayantes} :
+    \begin{itemize}
+        \item 81\% des violations de données sont dues à des mots de passe faibles ou réutilisés
+        \item 59\% des personnes utilisent le même mot de passe partout
+        \item Une attaque par force brute peut tester des milliards de mots de passe par seconde
+    \end{itemize}
+\end{securitybox}
+
+\section{Pourquoi Ne Pas Stocker les Mots de Passe en Clair ?}
+
+\begin{errorbox}
+    \textbf{JAMAIS stocker les mots de passe en clair !}
+    
+    Si vous stockez les mots de passe en clair dans votre base de données :
+    \begin{itemize}
+        \item Toute personne ayant accès à la base de données peut voir tous les mots de passe
+        \item En cas de fuite de données, tous les mots de passe sont compromis
+        \item Les attaquants peuvent utiliser ces mots de passe sur d'autres sites (réutilisation)
+        \item C'est une violation grave de la confidentialité et de la confiance
+    \end{itemize}
+\end{errorbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Coffre-fort} : Stocker un mot de passe en clair est comme écrire votre code PIN sur votre carte bancaire. Si quelqu'un vole votre carte, il a immédiatement accès à votre compte.
+\end{analogybox}
+
+\section{Hachage vs Chiffrement}
+
+\subsection{Chiffrement (Encryption)}
+
+\begin{definitionbox}
+    \textbf{Chiffrement} : Processus de transformation de données lisibles en données illisibles à l'aide d'une clé. Le chiffrement est \textbf{réversible} : avec la bonne clé, on peut retrouver les données originales.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Coffre} : Le chiffrement est comme mettre un document dans un coffre avec une clé. Avec la clé, vous pouvez récupérer le document original.
+\end{analogybox}
+
+\subsection{Hachage (Hashing)}
+
+\begin{definitionbox}
+    \textbf{Hachage} : Processus de transformation de données en une empreinte de taille fixe. Le hachage est \textbf{irréversible} : il est mathématiquement impossible de retrouver les données originales à partir du hash.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie de l'Empreinte Digitale} : Le hachage est comme prendre une empreinte digitale. Vous pouvez créer une empreinte à partir d'un doigt, mais vous ne pouvez pas recréer le doigt à partir de l'empreinte.
+\end{analogybox}
+
+\begin{bestpracticebox}
+    \textbf{Pour les Mots de Passe : TOUJOURS utiliser le hachage, jamais le chiffrement}
+    
+    Les mots de passe ne doivent jamais être récupérables, même par l'administrateur. Le hachage garantit cette irréversibilité.
+\end{bestpracticebox}
+
+\section{Le Problème du Hachage Simple}
+
+\begin{lstlisting}[style=javascript, caption=Hachage simple (DÉCONSEILLÉ)]
+const crypto = require('crypto');
+
+function hashSimple(password) {
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+// Exemple
+console.log(hashSimple('password123'));
+// Résultat : ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f
+\end{lstlisting}
+
+\subsection{Problème : Rainbow Tables}
+
+\begin{definitionbox}
+    \textbf{Rainbow Table} : Table précalculée de hachages pour des mots de passe courants. Les attaquants utilisent ces tables pour inverser les hachages instantanément.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Dictionnaire Inversé} : Une rainbow table est comme un dictionnaire qui liste tous les mots avec leurs traductions. Si vous avez le mot traduit, vous pouvez instantanément trouver le mot original.
+\end{analogybox}
+
+\textbf{Exemple} : Le hash de "password123" est toujours le même. Un attaquant avec une rainbow table peut instantanément savoir que le mot de passe est "password123".
+
+\section{La Solution : Le Salting}
+
+\begin{definitionbox}
+    \textbf{Sel (Salt)} : Chaîne aléatoire unique ajoutée au mot de passe avant le hachage. Le sel est stocké avec le hash et rend les rainbow tables inutiles.
+\end{definitionbox}
+
+\begin{analogybox}
+    \textbf{Analogie du Poivre} : Le sel est comme ajouter du poivre unique à chaque plat. Même si deux plats utilisent les mêmes ingrédients de base, le poivre unique rend chaque plat différent.
+\end{analogybox}
+
+\begin{lstlisting}[style=javascript, caption=Hachage avec sel (manuel - DÉCONSEILLÉ)]
+const crypto = require('crypto');
+
+function hashWithSalt(password, salt) {
+    return crypto.createHash('sha256')
+        .update(password + salt)
+        .digest('hex');
+}
+
+// Génération d'un sel aléatoire
+const salt = crypto.randomBytes(16).toString('hex');
+const hash = hashWithSalt('password123', salt);
+\end{lstlisting}
+
+\section{Bcrypt : La Solution Professionnelle}
+
+Bcrypt est une bibliothèque conçue spécifiquement pour le hachage de mots de passe. Elle combine :
+\begin{itemize}
+    \item Hachage irréversible
+    \item Salting automatique
+    \item Lenteur configurable (pour ralentir les attaques)
+\end{itemize}
+
+\subsection{Fonctionnement de Bcrypt}
+
+\begin{lstlisting}[style=javascript, caption=Hachage avec bcrypt]
+const bcrypt = require('bcrypt');
+
+async function hashPassword(password) {
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(password, saltRounds);
+    return hash;
+}
+
+// Exemple
+hashPassword('password123').then(hash => {
+    console.log(hash);
+    // $2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+});
+\end{lstlisting}
+
+\subsection{Structure du Hash Bcrypt}
+
+\begin{definitionbox}
+    \textbf{Structure du Hash Bcrypt} : \$2b\$10\$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+    \begin{itemize}
+        \item \textbf{\$2b\$} : Identifiant de l'algorithme bcrypt
+        \item \textbf{10} : Coût de calcul (nombre de rounds)
+        \item \textbf{N9qo8uLOickgx2ZMRZoMye} : Sel (22 caractères)
+        \item \textbf{IjZAgcfl7p92ldGxad68LJZdL17lhWy} : Hash (31 caractères)
+    \end{itemize}
+\end{definitionbox}
+
+\subsection{Salt Rounds (Coût de Calcul)}
+
+\begin{definitionbox}
+    \textbf{Salt Rounds} : Paramètre qui contrôle le nombre d'itérations de hachage. Plus le nombre est élevé, plus le hachage est lent (et sécurisé), mais plus il consomme de ressources.
+\end{definitionbox}
+
+\begin{itemize}
+    \item \textbf{10} : Valeur recommandée actuelle (~100ms)
+    \item \textbf{12} : Plus sécurisé (~400ms)
+    \item \textbf{8} : Plus rapide (~50ms)
+\end{itemize}
+
+\begin{bestpracticebox}
+    \textbf{Choix des Salt Rounds} :
+    \begin{itemize}
+        \item 10 est un bon compromis sécurité/performance
+        \item Ajustez selon vos besoins et votre infrastructure
+        \item Testez le temps de hachage sur votre serveur
+        \item Ne descendez jamais en dessous de 8
+    \end{itemize}
+\end{bestpracticebox}
+
+\section{Vérification d'un Mot de Passe}
+
+\begin{lstlisting}[style=javascript, caption=Vérification d'un mot de passe avec bcrypt]
+const bcrypt = require('bcrypt');
+
+async function verifyPassword(password, hash) {
+    const isValid = await bcrypt.compare(password, hash);
+    return isValid;
+}
+
+// Exemple
+const hash = '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+
+verifyPassword('password123', hash).then(isValid => {
+    console.log(isValid); // true
+});
+
+verifyPassword('wrongpassword', hash).then(isValid => {
+    console.log(isValid); // false
+});
+\end{lstlisting}
+
+\begin{definitionbox}
+    \textbf{bcrypt.compare()} : Fonction qui compare un mot de passe en clair avec un hash bcrypt. Elle extrait automatiquement le sel du hash et effectue la comparaison sécurisée.
+\end{definitionbox}
+
+\section{Implémentation dans l'Application}
+
+Créez le fichier \texttt{routes/auth.js} :
+
+\begin{lstlisting}[style=javascript, caption=routes/auth.js - Route d'inscription avec bcrypt]
+const express = require('express');
+const bcrypt = require('bcrypt');
+const db = require('../db');
+
+const router = express.Router();
+
+// ============================================================================
+// ROUTE D'INSCRIPTION
+// ============================================================================
+
+router.post('/register', async (req, res) => {
+    try {
+        const { email, password, nom, prenom } = req.body;
+        
+        // Validation des données
+        if (!email || !password || !nom || !prenom) {
+            return res.status(400).json({ 
+                error: 'Tous les champs sont obligatoires' 
+            });
+        }
+        
+        // Validation de l'email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ 
+                error: 'Email invalide' 
+            });
+        }
+        
+        // Validation du mot de passe
+        if (password.length < 8) {
+            return res.status(400).json({ 
+                error: 'Le mot de passe doit contenir au moins 8 caractères' 
+            });
+        }
+        
+        // Vérification si l'email existe déjà
+        const existingUser = await db.query(
+            'SELECT id FROM users WHERE email = $1',
+            [email]
+        );
+        
+        if (existingUser.rows.length > 0) {
+            return res.status(409).json({ 
+                error: 'Cet email est déjà utilisé' 
+            });
+        }
+        
+        // Hachage du mot de passe
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(password, saltRounds);
+        
+        // Insertion de l'utilisateur
+        const result = await db.query(
+            `INSERT INTO users (email, password_hash, nom, prenom)
+             VALUES ($1, $2, $3, $4)
+             RETURNING id, email, nom, prenom, role, date_creation`,
+            [email, password_hash, nom, prenom]
+        );
+        
+        const user = result.rows[0];
+        
+        // Réponse
+        res.status(201).json({
+            message: 'Inscription réussie',
+            user: {
+                id: user.id,
+                email: user.email,
+                nom: user.nom,
+                prenom: user.prenom,
+                role: user.role
+            }
+        });
+        
+    } catch (err) {
+        console.error('Erreur lors de l\'inscription:', err);
+        res.status(500).json({ 
+            error: 'Erreur lors de l\'inscription' 
+        });
+    }
+});
+
+module.exports = router;
+\end{lstlisting}
+
+\section{Bonnes Pratiques de Sécurité des Mots de Passe}
+
+\begin{bestpracticebox}
+    \textbf{Règles d'Or} :
+    \begin{itemize}
+        \item \textbf{JAMAIS} stocker les mots de passe en clair
+        \item \textbf{TOUJOURS} utiliser bcrypt ou Argon2
+        \item \textbf{TOUJOURS} utiliser un sel unique par mot de passe
+        \item \textbf{TOUJOURS} valider la force des mots de passe
+        \item \textbf{JAMAIS} limiter arbitrairement la longueur des mots de passe
+        \item \textbf{JAMAIS} renvoyer le mot de passe (même haché) dans les réponses API
+    \end{itemize}
+\end{bestpracticebox}
+
+\begin{securitybox}
+    \textbf{Validation des Mots de Passe} :
+    \begin{itemize}
+        \item Minimum 8 caractères (recommandé : 12+)
+        \item Mélange de lettres, chiffres et caractères spéciaux
+        \item Interdiction des mots de passe courants ("password", "123456")
+        \item Vérification contre les bases de données de mots de passe compromis
+    \end{itemize}
+\end{securitybox}
