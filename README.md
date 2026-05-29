@@ -1,82 +1,112 @@
-# Backend du projet Blog Multi-Role
+# Blog Multi-Role — Backend et Frontend léger
 
-Ce repository contient le backend Node.js/Express du projet de blog multi-role décrit dans le rapport.
+Ceci est le dépôt du projet "Blog Multi-Role" : une application web pédagogique composée d'un backend Node.js/Express avec PostgreSQL et d'un frontend statique (dossier `public/`). Le projet illustre :
 
-## Installation
+- Authentification avec JWT (access + refresh tokens)
+- Gestion de rôles (utilisateur / auteur / admin)
+- Opérations CRUD pour articles et commentaires
+- Connexion à PostgreSQL via le driver `pg` (sans ORM)
 
-1. Copier `.env.example` en `.env` et adapter les valeurs :
+## Fonctionnalités principales
+
+- Inscription / connexion / rafraîchissement de token / déconnexion
+- Création, lecture, mise à jour et suppression d'articles
+- Ajout et suppression de commentaires
+- Contrôles d'accès basés sur les rôles
+- Frontend statique servi depuis `public/`
+
+## Prérequis
+
+- Node.js 18+ (support des modules ES)
+- PostgreSQL (local ou distant)
+- Git
+
+## Installation (rapide)
+
+1. Cloner le dépôt :
 
 ```bash
-cp .env.example .env
+git clone https://github.com/joachimbang/blog.git
+cd blog
 ```
 
-2. Installer les dépendances :
+2. Créer le fichier d'environnement `.env` (voir section suivante), puis installer les dépendances :
 
 ```bash
+cp .env.example .env   # ou créez .env manuellement
 npm install
 ```
 
-## Lancer le serveur
-
-Ce projet utilise les modules ES de Node.js (`type: "module"` dans `package.json`). Assurez-vous d'exécuter Node.js 18+.
+3. Configurer la base de données PostgreSQL et initialiser le schema :
 
 ```bash
-node server.js
+createdb blog_db
+psql -d blog_db -f sql/schema.sql   # si le script existe
 ```
 
-Le serveur écoute par défaut sur le port `3000`.
-
-## Routes principales
-
-- `POST /api/auth/register` : inscription d'un nouvel utilisateur
-- `POST /api/auth/login` : connexion et génération d'access token + refresh token
-- `POST /api/auth/token` : rafraîchissement de l'access token
-- `POST /api/auth/logout` : déconnexion (révocation du refresh token)
-- `GET /api/blogs` : récupération de tous les blogs
-- `GET /api/blogs/:id` : récupération d'un blog par ID
-- `POST /api/blogs` : création d'un blog (role `auteur` ou `admin` requis)
-- `PUT /api/blogs/:id` : modification d'un blog (auteur ou admin)
-- `DELETE /api/blogs/:id` : suppression d'un blog (auteur ou admin)
-
-## Structure des fichiers
-
-- `server.js` : point d'entrée de l'application
-- `db.js` : configuration de la connexion PostgreSQL
-- `auth.js` : génération des JWT d'accès et de rafraîchissement
-- `middleware/auth.js` : middleware de validation des access tokens
-- `middleware/roles.js` : middleware de vérification des rôles
-- `routes/auth.js` : routes d'authentification
-- `routes/blogs.js` : routes de gestion des blogs
-
-## Git et mise en ligne
-
-Avant de mettre le backend en ligne, ajoutez un `.gitignore` pour exclure les fichiers sensibles et volumineux :
-- `node_modules/`
-- `.env`
-- `*.log`
-- `.vscode/`
-- `rapport/`
-
-Commandes Git utilisées pour initialiser le projet :
+4. Lancer en mode développement :
 
 ```bash
-echo "# blog" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/joachimbang/blog.git
-git push -u origin main
+npm run dev   # nodemon ou script de dev
 ```
 
-Ensuite, pour stocker le backend dans une branche séparée :
+En production :
 
 ```bash
-git checkout -b backend
-git add .
-git commit -m "backend setup"
+npm ci
+npm start
 ```
 
-## Remarque
+Le serveur écoute par défaut sur le port défini dans `PORT` (ex. 3000).
 
-Pour la démonstration, les refresh tokens sont stockés en mémoire dans `routes/auth.js`. En production, il faut les stocker dans une base de données ou un store sécurisé afin de pouvoir les révoquer correctement.
+## Variables d'environnement
+
+Exemple minimal à placer dans ` .env ` :
+
+```
+PORT=3000
+DATABASE_URL=postgresql://user:password@localhost:5432/blog_db
+JWT_SECRET=une_cle_secrete
+NODE_ENV=development
+```
+
+Remplacez `user`, `password` et `blog_db` par vos valeurs réelles.
+
+## Base de données
+
+Le dossier `sql/` contient les scripts SQL (si fournis). Importez `sql/schema.sql` pour créer les tables.
+
+## Frontend
+
+Les fichiers statiques sont dans le dossier `public/`. Une fois le serveur démarré, ouvrez :
+
+```
+http://localhost:3000
+```
+
+## Commandes utiles
+
+```bash
+npm install        # installer dépendances
+npm run dev        # lancer en dev (nodemon)
+npm start          # lancer en production
+```
+
+## Tests
+
+Il n'y a pas de suite de tests automatisés incluse pour l'instant. Pour tester manuellement :
+
+- Utilisez Postman ou curl pour appeler les routes API listées dans `routes/`
+
+## Contribution
+
+1. Forkez le dépôt
+2. Créez une branche feature : `git checkout -b feat/ma-fonction`
+3. Committez vos changements et poussez
+4. Ouvrez une Pull Request
+
+## License
+
+Projet pédagogique — pas de licence explicite fournie.
+
+---
